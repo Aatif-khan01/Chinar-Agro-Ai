@@ -44,7 +44,7 @@ def generate_crop_advice(input_data: dict, prediction: dict) -> str:
         """
         
         response = client.models.generate_content(
-            model='gemini-2.0-flash-lite',
+            model='gemini-2.0-flash',
             contents=prompt
         )
         return response.text.strip()
