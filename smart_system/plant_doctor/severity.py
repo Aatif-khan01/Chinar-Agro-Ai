@@ -10,7 +10,7 @@ Severity Levels
   • 20–50 %  → Moderate
   • 50 %+    → Severe
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

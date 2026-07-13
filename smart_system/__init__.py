@@ -1,5 +1,5 @@
 """
-Smart Agriculture System — Intelligent Advisory Engine
+Chinar Agro AI System — Intelligent Advisory Engine
 =========================================================
 A professional AI system that integrates Disease Detection,
 Crop Recommendation, and Yield Prediction models into a
@@ -20,16 +20,16 @@ evaluation       : Automated testing suite
 
 Usage
 -----
-    cd C:\\CropProject
+    cd ChinarAgroAi
     python -m smart_system             # Interactive mode
     python -m smart_system.evaluation  # Automated evaluation
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 
 __version__ = "2.0.0"
-__author__  = "Smart Agriculture AI Team"
+__author__  = "Chinar Agro AI Team"
 __all__     = [
     "config",
     "disease_engine",

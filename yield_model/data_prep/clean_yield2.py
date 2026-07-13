@@ -2,7 +2,7 @@ import pandas as pd
 
 # Load dataset
 df = pd.read_csv(
-r"D:\Project\CropProject\yield_model\data\yield_data\raw_datasets\yield2.csv\India Agriculture Crop Production.csv"
+r".\yield_model\data\yield_data\raw_datasets\yield2.csv\India Agriculture Crop Production.csv"
 )
 
 # Keep important columns
@@ -28,7 +28,7 @@ df = df.dropna()
 
 # Save cleaned dataset
 df.to_csv(
-r"D:\Project\CropProject\yield_model\data\yield_data\cleaned\yield2_clean.csv",
+r".\yield_model\data\yield_data\cleaned\yield2_clean.csv",
 index=False
 )
 

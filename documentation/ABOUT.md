@@ -1,6 +1,6 @@
-# 🌾 About AgriBrain: Smart Agriculture AI System
+# 🌾 About Chinar Agro AI: Chinar Agro AI System
 
-**AgriBrain** is a production-grade, full-stack artificial intelligence platform designed to bridge the gap between advanced data science and traditional agriculture. By combining deep learning computer vision, machine learning regression and classification ensembles, and generative AI (Large Language Models), AgriBrain empowers farmers, researchers, and agronomists with data-driven decision-making tools.
+**Chinar Agro AI** is a production-grade, full-stack artificial intelligence platform designed to bridge the gap between advanced data science and traditional agriculture. By combining deep learning computer vision, machine learning regression and classification ensembles, and generative AI (Large Language Models), Chinar Agro AI empowers farmers, researchers, and agronomists with data-driven decision-making tools.
 
 ---
 
@@ -10,13 +10,13 @@ In modern agriculture, farmers face three primary challenges:
 2. **Incorrect Crop Selection:** Selecting crops without analyzing soil chemistry (N, P, K, pH) and climate trends reduces harvest efficiency.
 3. **Yield Uncertainty:** Lack of predictive insight into future harvests makes planning and resource allocation difficult.
 
-**AgriBrain** solves these challenges by providing an on-demand, unified dashboard that acts as an expert digital agronomist.
+**Chinar Agro AI** solves these challenges by providing an on-demand, unified dashboard that acts as an expert digital agronomist.
 
 ---
 
 ## 🧠 Core Pillars & Intelligent Engines
 
-AgriBrain operates on a decoupled, microservices-ready backend consisting of three machine learning engines and one generative AI agent:
+Chinar Agro AI operates on a decoupled, microservices-ready backend consisting of three machine learning engines and one generative AI agent:
 
 ### 1. 🔬 Plant Doctor AI (Disease Diagnosis)
 - **Technology:** EfficientNet CNN Ensemble (EfficientNet-B0 + ResNet-50 + EfficientNet-B1)

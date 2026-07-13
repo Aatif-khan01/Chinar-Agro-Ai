@@ -1,5 +1,5 @@
 """
-Professional Logger — Smart Agriculture System v2.0
+Professional Logger — Chinar Agro AI System v2.0
 ======================================================
 Handles all logging for the smart prediction system.
 
@@ -7,7 +7,7 @@ Logs predictions, inputs, timestamps, system events,
 overall health grades, and cross-module analysis results
 to a structured, auditable log file.
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

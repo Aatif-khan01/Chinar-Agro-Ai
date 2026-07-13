@@ -1,5 +1,5 @@
 """
-Disease Detection Engine — Smart Agriculture System v2.0
+Disease Detection Engine — Chinar Agro AI System v2.0
 ===========================================================
 Loads the trained ResNet50 CNN model and predicts plant disease
 from leaf images. Handles both new (Dropout+FC) and legacy
@@ -15,7 +15,7 @@ Features
     • Corrupted model detection
     • Professional error handling and logging
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

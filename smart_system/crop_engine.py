@@ -1,5 +1,5 @@
 """
-Crop Recommendation Engine — Smart Agriculture System v2.0
+Crop Recommendation Engine — Chinar Agro AI System v2.0
 =============================================================
 Loads the trained ensemble model and recommends the best crop
 based on soil and weather conditions with feature engineering.
@@ -13,7 +13,7 @@ Features
     • Corrupted model detection
     • Professional error handling and logging
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

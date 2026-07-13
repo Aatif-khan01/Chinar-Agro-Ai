@@ -4,7 +4,7 @@ Yield Prediction Model — Prediction Script
 Predicts crop yield for a given area, crop, and year
 using the trained RandomForestRegressor.
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os

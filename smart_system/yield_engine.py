@@ -1,5 +1,5 @@
 """
-Yield Prediction Engine — Smart Agriculture System v2.0
+Yield Prediction Engine — Chinar Agro AI System v2.0
 =========================================================
 Loads the trained RandomForestRegressor and predicts crop yield.
 Handles both new (LabelEncoder) and legacy (get_dummies) formats.
@@ -13,7 +13,7 @@ Features
     • Metadata-driven feature engineering
     • Professional error handling and logging
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

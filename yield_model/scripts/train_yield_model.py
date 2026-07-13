@@ -5,7 +5,7 @@ Improvements over Phase 1/2:
   Y4: XGBoost replaces RandomForestRegressor (115MB → ~5MB, faster)
   Y3: Season encoded as feature (where available from India sub-dataset)
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os

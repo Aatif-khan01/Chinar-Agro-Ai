@@ -11,7 +11,7 @@ Changes from v3.0
   • top_predictions passed as list-of-dicts AND legacy tuples
   • Confidence tier now also considers disagreement downgrade
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 3.1.0
 """
 

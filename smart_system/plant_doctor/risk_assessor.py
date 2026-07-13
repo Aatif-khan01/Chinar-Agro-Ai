@@ -10,7 +10,7 @@ Risk Levels
   • 20–50 %  → MODERATE (Take action — infection spreading)
   • 50 %+    → HIGH    (Urgent — significant crop damage)
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

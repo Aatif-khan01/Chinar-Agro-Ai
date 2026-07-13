@@ -15,7 +15,7 @@ This only needs to be run ONCE after training the model.
 The resulting index is saved to:
     disease_model/models/faiss_index/
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

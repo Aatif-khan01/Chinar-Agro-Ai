@@ -35,7 +35,7 @@ Architecture (v3.0 Ensemble)
     -> Display Formatter
     -> Final Structured Output
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 3.0.0
 """
 

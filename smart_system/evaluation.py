@@ -1,5 +1,5 @@
 """
-Automated Evaluation — Smart Agriculture System v2.0
+Automated Evaluation — Chinar Agro AI System v2.0
 =======================================================
 Tests all three AI models with predefined sample inputs
 to validate system integrity and prediction quality.
@@ -14,10 +14,10 @@ Evaluation Coverage
 
 Usage
 -----
-    cd C:\\CropProject
+    cd ChinarAgroAi
     python -m smart_system.evaluation
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

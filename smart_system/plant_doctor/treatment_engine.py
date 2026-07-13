@@ -12,7 +12,7 @@ Coverage
   • Preventive measures for future seasons
   • Safety notes and organic alternatives
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

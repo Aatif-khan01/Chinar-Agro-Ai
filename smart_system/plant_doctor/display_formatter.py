@@ -11,7 +11,7 @@ Features
   • Formats confidence as descriptive text
   • Structures output for direct UI consumption
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

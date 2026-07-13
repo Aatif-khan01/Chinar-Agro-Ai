@@ -30,7 +30,7 @@ Outputs
   disease_model/models/ensemble_resnet50.pth
   disease_model/models/ensemble_efficientnet_b1.pth
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 3.0.0
 """
 

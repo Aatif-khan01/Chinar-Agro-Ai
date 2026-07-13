@@ -20,7 +20,7 @@ Pipeline Stages (13 total)
   12. Similarity Search
   13. Final Output Enhancement (user-centric polish)
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 3.0.0
 """
 

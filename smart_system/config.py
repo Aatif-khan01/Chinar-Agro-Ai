@@ -1,5 +1,5 @@
 """
-Configuration — Smart Agriculture System
+Configuration — Chinar Agro AI System
 ==========================================
 Centralized paths, thresholds, model metadata, and constants
 for the integrated intelligent prediction engine.
@@ -7,7 +7,7 @@ for the integrated intelligent prediction engine.
 All system-wide settings are managed here for easy tuning
 and maintenance.
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

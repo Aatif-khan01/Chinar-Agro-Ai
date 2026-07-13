@@ -16,7 +16,7 @@ Methods
   • Soft capping (asymptotic limit to a maximum value)
   • Entropy-aware adjustment (high-entropy = less confident)
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

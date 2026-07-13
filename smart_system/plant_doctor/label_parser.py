@@ -10,7 +10,7 @@ Handles edge cases like:
   - Labels with commas: "Pepper,_bell___Bacterial_spot"
   - Healthy plants: "Tomato___healthy"
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

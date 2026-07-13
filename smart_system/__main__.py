@@ -1,15 +1,15 @@
 """
-Entry point for running the Smart Agriculture System as a module.
+Entry point for running the Chinar Agro AI System as a module.
 
 Usage
 -----
-    cd C:\\CropProject
+    cd ChinarAgroAi
 
     python -m smart_system               # Interactive prediction mode
     python -m smart_system --evaluate    # Automated evaluation mode
     python -m smart_system --version     # Show version
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 
@@ -38,7 +38,7 @@ def _main() -> None:
         print(f"{config.SYSTEM_SUBTITLE}")
 
     elif '--help' in args or '-h' in args:
-        print("Smart Agriculture System")
+        print("Chinar Agro AI System")
         print()
         print("Usage:")
         print("  python -m smart_system              Interactive mode")

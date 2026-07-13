@@ -5,7 +5,7 @@ Trains a Soft Voting Ensemble (RandomForest + XGBoost + LightGBM)
 with stratified k-fold cross-validation, evaluation metrics,
 confusion matrix, and feature importance visualization.
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os

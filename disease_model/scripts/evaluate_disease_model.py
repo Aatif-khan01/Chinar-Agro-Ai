@@ -6,7 +6,7 @@ Runs the trained model on the full validation set and generates:
 - Classification report (precision, recall, F1 per class)
 - Top-1 and Top-5 accuracy
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os
@@ -29,9 +29,9 @@ import seaborn as sns
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
-DATA_DIR = r"D:\Project\CropProject\disease_model\data\combined"
-MODEL_DIR = r"D:\Project\CropProject\disease_model\models"
-REPORT_DIR = r"D:\Project\CropProject\disease_model\reports"
+DATA_DIR = r".\disease_model\data\combined"
+MODEL_DIR = r".\disease_model\models"
+REPORT_DIR = r".\disease_model\reports"
 
 MODEL_PATH = os.path.join(MODEL_DIR, "disease_model.pth")
 CLASS_MAP_PATH = os.path.join(MODEL_DIR, "class_names.json")

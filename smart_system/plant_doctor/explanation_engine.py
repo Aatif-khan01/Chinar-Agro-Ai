@@ -12,7 +12,7 @@ Coverage
   • Cultural factors (irrigation, spacing, etc.)
   • Fallback explanations for unmapped diseases
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

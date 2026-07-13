@@ -1,7 +1,7 @@
 """
 Smart Predict — Intelligent Agriculture Decision Engine v2.0
 ================================================================
-Main entry point for the Smart Agriculture System.
+Main entry point for the Chinar Agro AI System.
 
 Integrates all three AI models (Disease Detection, Crop
 Recommendation, Yield Prediction) into a single unified
@@ -15,12 +15,12 @@ prediction pipeline with:
 
 Usage
 -----
-    cd C:\\CropProject
+    cd ChinarAgroAi
     python -m smart_system
 
     or:  python smart_system/smart_predict.py
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 
@@ -179,7 +179,7 @@ def get_int_input(
 
 def main() -> None:
     """
-    Execute the complete Smart Agriculture prediction pipeline.
+    Execute the complete Chinar Agro AI prediction pipeline.
 
     Pipeline Steps
     ----------

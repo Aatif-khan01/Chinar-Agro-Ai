@@ -1,5 +1,5 @@
 """
-Risk Analysis Engine — Smart Agriculture System v2.0
+Risk Analysis Engine — Chinar Agro AI System v2.0
 =======================================================
 Professional-grade risk assessment engine computing:
 
@@ -23,7 +23,7 @@ grounded in agronomic principles:
     Humidity             13%       13
     Water Availability   15%       15
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

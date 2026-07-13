@@ -10,7 +10,7 @@ Trains a ResNet50 CNN for plant disease classification with:
 - Class name mapping (saved as JSON)
 - Mixed precision training (AMP)
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os
@@ -31,9 +31,9 @@ from sklearn.metrics import classification_report
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
-DATA_DIR = r"D:\Project\CropProject\disease_model\data\combined"
-MODEL_DIR = r"D:\Project\CropProject\disease_model\models"
-REPORT_DIR = r"D:\Project\CropProject\disease_model\reports"
+DATA_DIR = r".\disease_model\data\combined"
+MODEL_DIR = r".\disease_model\models"
+REPORT_DIR = r".\disease_model\reports"
 
 # Hyperparameters
 IMAGE_SIZE = 224

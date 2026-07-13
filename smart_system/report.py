@@ -1,11 +1,11 @@
 """
-Report Generator — Smart Agriculture System v2.0
+Report Generator — Chinar Agro AI System v2.0
 ====================================================
 Generates professionally formatted Smart Farm Reports
 with system version, confidence analysis, soil score
 explanations, overall health grade, and cross-module advisory.
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 

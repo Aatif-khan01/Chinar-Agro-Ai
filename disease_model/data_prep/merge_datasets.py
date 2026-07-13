@@ -6,20 +6,20 @@ import pandas as pd
 # PATHS (FINAL CORRECT)
 # ==========================
 
-plantvillage = r"D:\Project\CropProject\disease_model\data\plantvillage"
+plantvillage = r".\disease_model\data\plantvillage"
 
 # New Plant Diseases Dataset
-newdataset = r"D:\Project\CropProject\disease_model\data\newdataset\New Plant Diseases Dataset(Augmented)\train"
+newdataset = r".\disease_model\data\newdataset\New Plant Diseases Dataset(Augmented)\train"
 
 # Rice Dataset
-rice = r"D:\Project\CropProject\disease_model\data\archive (1)\Rice Leaf Bacterial and Fungal Disease Dataset\Augmented\Augmented Images"
+rice = r".\disease_model\data\archive (1)\Rice Leaf Bacterial and Fungal Disease Dataset\Augmented\Augmented Images"
 
 # Cassava Dataset
-cassava = r"D:\Project\CropProject\disease_model\data\cassava-leaf-disease-classification\train_images"
-cassava_csv = r"D:\Project\CropProject\disease_model\data\cassava-leaf-disease-classification\train.csv"
+cassava = r".\disease_model\data\cassava-leaf-disease-classification\train_images"
+cassava_csv = r".\disease_model\data\cassava-leaf-disease-classification\train.csv"
 
 # Combined Dataset
-combined = r"D:\Project\CropProject\disease_model\data\combined"
+combined = r".\disease_model\data\combined"
 
 os.makedirs(combined, exist_ok=True)
 

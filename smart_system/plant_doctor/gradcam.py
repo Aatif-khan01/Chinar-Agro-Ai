@@ -14,7 +14,7 @@ Features
   • Returns the raw activation mask for downstream severity analysis
   • Saves the overlay as a JPEG file
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

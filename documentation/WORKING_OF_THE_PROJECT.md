@@ -1,10 +1,10 @@
-# Technical Report: Working of the Smart Agriculture AI System
+# Technical Report: Working of the Chinar Agro AI System
 
 ---
 
 ## 1. System Overview
 
-The Smart Agriculture AI System is designed as a modular, full-stack predictive platform that integrates machine learning models, deep learning pipelines, and generative AI to support agronomic decisions. Structurally, the platform is divided into a frontend dashboard interface, an API orchestration backend, and a dedicated machine learning execution layer. The user interface allows interaction with complex algorithms without requiring technical expertise. By decoupling the presentation layer from the core computation, the system handles heavy model inference and prompt generation on the server side while maintaining a responsive user dashboard. The backend utilizes FastAPI to route data payloads to specific machine learning engines, which run as memory-resident singleton services to ensure low-latency responses.
+The Chinar Agro AI System is designed as a modular, full-stack predictive platform that integrates machine learning models, deep learning pipelines, and generative AI to support agronomic decisions. Structurally, the platform is divided into a frontend dashboard interface, an API orchestration backend, and a dedicated machine learning execution layer. The user interface allows interaction with complex algorithms without requiring technical expertise. By decoupling the presentation layer from the core computation, the system handles heavy model inference and prompt generation on the server side while maintaining a responsive user dashboard. The backend utilizes FastAPI to route data payloads to specific machine learning engines, which run as memory-resident singleton services to ensure low-latency responses.
 
 ---
 
@@ -79,4 +79,4 @@ The components of the system are unified by a high-performance backend built on 
 
 ## 12. Conclusion
 
-In conclusion, the Smart Agriculture AI System goes beyond basic predictive modeling by acting as an intelligent decision support platform. By combining deep learning computer vision, machine learning ensembles, and generative explanations, the system provides farmers with clear, actionable insights. This integrated approach helps mitigate risks, improve resource use, and support sustainable farming practices.
+In conclusion, the Chinar Agro AI System goes beyond basic predictive modeling by acting as an intelligent decision support platform. By combining deep learning computer vision, machine learning ensembles, and generative explanations, the system provides farmers with clear, actionable insights. This integrated approach helps mitigate risks, improve resource use, and support sustainable farming practices.

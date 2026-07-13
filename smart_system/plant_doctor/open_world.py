@@ -7,7 +7,7 @@ If the maximum prediction confidence falls below a configurable
 threshold, the system flags the result as "Unknown Disease"
 instead of returning a potentially wrong classification.
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

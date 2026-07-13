@@ -11,7 +11,7 @@ Workflow
   3. Search the FAISS index for the top-N nearest neighbors
   4. Return similar cases with labels and distances
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 1.0.0
 """
 

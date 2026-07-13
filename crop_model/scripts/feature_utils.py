@@ -4,7 +4,7 @@ Feature Engineering Utilities for Crop Recommendation Model
 Shared module ensuring consistent feature engineering between
 training and prediction pipelines.
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import numpy as np

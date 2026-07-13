@@ -1,5 +1,5 @@
 """
-Ensemble Disease Detection Engine — Smart Agriculture System v3.1
+Ensemble Disease Detection Engine — Chinar Agro AI System v3.1
 ==================================================================
 Weighted ensemble of EfficientNet-B0, ResNet-50, and EfficientNet-B1.
 
@@ -15,7 +15,7 @@ Improvements over v3.0
   8. Conditional ensemble execution (early-exit > 0.85)
   9. Rich UI metadata (model_confidences, unknown_detected, etc.)
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 3.1.0
 """
 

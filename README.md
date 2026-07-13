@@ -1,7 +1,7 @@
 <div align="center">
 
   <h1>🌾 Chinar Agro AI System</h1>
-  <h3>AI-Based Crop Health & Yield Prediction with Advisory Support</h3>
+  <h3>Precision Agriculture Platform with AI Advisory Support</h3>
   <p>An intelligent, ML-powered platform that empowers farmers with data-driven agronomic decisions — from disease diagnosis to harvest forecasting.</p>
 
   <br/>
@@ -20,7 +20,7 @@
   <!-- Status Badges -->
   <p>
     <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="Status" />
-    <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
+    <img src="https://img.shields.io/badge/Hackathon-2026-green?style=flat-square" alt="License" />
     <img src="https://img.shields.io/badge/platform-web-lightgrey?style=flat-square" alt="Platform" />
   </p>
 
@@ -40,7 +40,7 @@
 - [How to Use](#️-how-to-use)
 - [Team Contributions](#-team-contributions)
 - [Future Improvements](#-future-improvements)
-- [License](#-license)
+
 
 ---
 
@@ -227,8 +227,8 @@ Download the training datasets and place them in the correct directories before 
 
 ### Step 1 — Clone the Repository
 ```bash
-git clone https://github.com/FuricBond/smart-agriculture-ai-system.git
-cd smart-agriculture-ai-system
+git clone https://github.com/Aatif-khan01/Chinar-Agro-Ai.git
+cd Chinar-Agro-Ai
 ```
 
 ---
@@ -416,13 +416,12 @@ This project was developed collaboratively by a five-member team, with each memb
 
 ---
 
-## 📄 License
+## 🏆 Hackathon 2026
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project was developed by the **Chinar Agro AI Team** as a hackathon submission. All rights reserved.
 
 ---
 
 <div align="center">
-  <p>Built with ❤️ for the future of farming.</p>
   <p><i>Chinar Agro AI System — Empowering farmers with the power of artificial intelligence.</i></p>
 </div>

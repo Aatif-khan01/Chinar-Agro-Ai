@@ -4,7 +4,7 @@ Crop Recommendation Model — Prediction Script
 Predicts the best crop based on soil and weather conditions
 using the trained ensemble model.
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os

@@ -5,7 +5,7 @@ Predicts plant disease from a leaf image using the
 trained ResNet50 model. Returns top-5 predictions
 with confidence scores.
 
-Project: AI-Based Crop Health and Yield Prediction System
+Project: Chinar Agro AI — Precision Agriculture Platform
 """
 
 import os
@@ -21,7 +21,7 @@ from PIL import Image
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
-MODEL_DIR = r"D:\Project\CropProject\disease_model\models"
+MODEL_DIR = r".\disease_model\models"
 MODEL_PATH = os.path.join(MODEL_DIR, "disease_model.pth")
 CLASS_MAP_PATH = os.path.join(MODEL_DIR, "class_names.json")
 
@@ -49,7 +49,7 @@ try:
     print(f"  ✅ Loaded {num_classes} disease classes")
 except FileNotFoundError:
     # Fallback: scan directory structure
-    DATA_DIR = r"D:\Project\CropProject\disease_model\data\combined"
+    DATA_DIR = r".\disease_model\data\combined"
     if os.path.isdir(DATA_DIR):
         class_names = sorted([
             d for d in os.listdir(DATA_DIR)

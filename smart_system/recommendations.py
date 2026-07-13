@@ -1,5 +1,5 @@
 """
-Smart Recommendations Engine — Smart Agriculture System v2.0
+Smart Recommendations Engine — Chinar Agro AI System v2.0
 ================================================================
 Generates intelligent, context-aware farming recommendations by
 combining insights from all three prediction models:
@@ -12,7 +12,7 @@ combining insights from all three prediction models:
 The engine produces actionable advice grounded in agronomic
 best practices rather than generic suggestions.
 
-Author  : Smart Agriculture AI Team
+Author  : Chinar Agro AI Team
 Version : 2.0.0
 """
 
