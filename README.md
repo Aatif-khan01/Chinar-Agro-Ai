@@ -20,7 +20,7 @@
   <!-- Status Badges -->
   <p>
     <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="Status" />
-    <img src="https://img.shields.io/badge/Hackathon-2026-green?style=flat-square" alt="License" />
+    <img src="https://img.shields.io/badge/Hackathon-2026-green?style=flat-square" alt="Hackathon" />
     <img src="https://img.shields.io/badge/platform-web-lightgrey?style=flat-square" alt="Platform" />
   </p>
 

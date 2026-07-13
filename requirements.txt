@@ -24,3 +24,9 @@ python-dotenv>=1.0.0
 ftfy
 clip @ https://github.com/openai/CLIP/archive/refs/heads/master.zip
 lightgbm>=4.3
+
+# Deployment Utilities
+gunicorn>=21.0.0
+matplotlib
+seaborn
+google-generativeai

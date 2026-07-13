@@ -48,7 +48,7 @@ yield_model/data/
 *.onnx
 
 # Explicitly ignore the large crop recommendation model
-crop_model/models/improved_crop_model.pkl
+# crop_model/models/improved_crop_model.pkl (Now tracked by Git LFS)
 
 # Allow tracking of specific small models
 !disease_model/models/disease_model.pth

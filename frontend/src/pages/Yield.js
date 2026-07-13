@@ -641,7 +641,7 @@ const Yield = () => {
     setError(null);
     setResult(null);
     try {
-      const res = await fetch('http://127.0.0.1:8000/predict-yield-v2/full', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/predict-yield-v2/full', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

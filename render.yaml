@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: chinar-agro-ai-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -w 1 -k uvicorn.workers.UvicornWorker ai_api.api:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: PYTHONIOENCODING
+        value: utf-8
+    plan: free

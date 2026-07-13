@@ -54,7 +54,7 @@ const Report = () => {
         }
 
         try {
-            const { data } = await axios.post('http://127.0.0.1:8000/chinar-agro-report', payload, {
+            const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/chinar-agro-report', payload, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setResult(data.chinar_agro_report);
