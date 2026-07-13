@@ -84,7 +84,7 @@ def log_request(endpoint: str, payload: dict = None):
     logger.info(f"REQUEST  {endpoint} — {payload or ''}")
 
 def log_prediction(model: str, result: str):
-    logger.info(f"PREDICT  [{model}] → {result}")
+    logger.info(f"PREDICT  [{model}] -> {result}")
 
 
 # ══════════════════════════════════════════════════════════════
