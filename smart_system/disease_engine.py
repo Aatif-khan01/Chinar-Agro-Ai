@@ -173,10 +173,9 @@ class DiseaseEngine:
             self.model = model.to(self.device)
             self.model.eval()
 
-            # ── Image Transform (standard ImageNet validation) ──
+            # ── Image Transform (must match training validation transform) ──
             self.transform = transforms.Compose([
-                transforms.Resize(256),              # Preserve aspect ratio
-                transforms.CenterCrop(config.IMAGE_SIZE),  # Standard 224×224 crop
+                transforms.Resize((config.IMAGE_SIZE, config.IMAGE_SIZE)),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     mean=config.IMAGENET_MEAN,

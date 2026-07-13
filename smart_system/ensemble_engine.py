@@ -276,15 +276,20 @@ class EnsembleEngine:
                 return False
 
             t0 = time.time()
+            loaded_secondary = 0
 
             # ── ResNet-50 ─────────────────────────────────────
             logger.info("Loading ResNet-50...")
             r50 = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
             r50.fc = nn.Linear(r50.fc.in_features, num_cls)
             r50 = self._load_checkpoint(r50, cfg.ENSEMBLE_RESNET50_PATH, "ResNet-50")
-            r50 = r50.to(self.device).eval()
-            self._resnet50 = r50
-            logger.info(f"ResNet-50 ready: fc={r50.fc.in_features if hasattr(r50, 'fc') else '?'} → {num_cls}")
+            if r50 is not None:
+                r50 = r50.to(self.device).eval()
+                self._resnet50 = r50
+                loaded_secondary += 1
+                logger.info(f"ResNet-50 ready: fc -> {num_cls}")
+            else:
+                logger.warning("ResNet-50 SKIPPED — no fine-tuned checkpoint.")
 
             # ── EfficientNet-B1 ───────────────────────────────
             logger.info("Loading EfficientNet-B1...")
@@ -292,31 +297,33 @@ class EnsembleEngine:
             in_b1 = b1.classifier[1].in_features
             b1.classifier = nn.Sequential(nn.Dropout(0.2, inplace=True), nn.Linear(in_b1, num_cls))
             b1 = self._load_checkpoint(b1, cfg.ENSEMBLE_EFFB1_PATH, "EfficientNet-B1")
-            b1 = b1.to(self.device).eval()
-            self._efficientnet_b1 = b1
-            logger.info(f"EfficientNet-B1 ready: {in_b1} → {num_cls}")
+            if b1 is not None:
+                b1 = b1.to(self.device).eval()
+                self._efficientnet_b1 = b1
+                loaded_secondary += 1
+                logger.info(f"EfficientNet-B1 ready: {in_b1} -> {num_cls}")
+            else:
+                logger.warning("EfficientNet-B1 SKIPPED — no fine-tuned checkpoint.")
+
+            if loaded_secondary == 0:
+                logger.warning(
+                    "No secondary models loaded (no fine-tuned checkpoints found). "
+                    "Ensemble will use EfficientNet-B0 ONLY."
+                )
+                # Still mark as loaded so we don't retry every request
+                self._secondary_loaded = True
+                return True
 
             # ── CLASS CONSISTENCY VALIDATION ──────────────────
-            # Secondary models share the primary class list (same dataset).
-            # We validate that the class_names list is identical for all.
-            # (Secondary models don't carry their own class list — they use
-            # whatever index the primary engine's class_names provides.)
-            # We validate num_cls consistency as the key guard.
-            logger.info(
-                f"Class consistency: primary={num_cls} classes | "
-                f"r50_output={r50.fc.out_features} | "
-                f"b1_output={b1.classifier[-1].out_features}"
-            )
-            mismatch_names: Dict[str, List[str]] = {}
-            if r50.fc.out_features != num_cls:
-                mismatch_names["resnet50"] = []   # triggers error below
-            if b1.classifier[-1].out_features != num_cls:
-                mismatch_names["efficientnet_b1"] = []
-            if mismatch_names:
-                raise ValueError(
-                    f"Output size mismatch: primary has {num_cls} classes but "
-                    f"{list(mismatch_names.keys())} have different output dimensions."
-                )
+            logger.info(f"Ensemble: {loaded_secondary} secondary model(s) loaded")
+            if self._resnet50 is not None:
+                if self._resnet50.fc.out_features != num_cls:
+                    logger.error("ResNet-50 output size mismatch!")
+                    self._resnet50 = None
+            if self._efficientnet_b1 is not None:
+                if self._efficientnet_b1.classifier[-1].out_features != num_cls:
+                    logger.error("EfficientNet-B1 output size mismatch!")
+                    self._efficientnet_b1 = None
 
             self._secondary_loaded = True
             logger.info(
@@ -332,18 +339,28 @@ class EnsembleEngine:
 
     @staticmethod
     def _load_checkpoint(model, path: str, name: str):
-        """Load state-dict checkpoint if file exists and is valid."""
+        """Load state-dict checkpoint if file exists and is valid.
+        
+        Returns None if no valid checkpoint is found — the model
+        should NOT be used with random/ImageNet-only weights for
+        disease classification.
+        """
         import torch
         if os.path.isfile(path) and os.path.getsize(path) > 1024:
             try:
                 state = torch.load(path, map_location="cpu", weights_only=True)
                 model.load_state_dict(state)
-                logger.info(f"{name}: fine-tuned checkpoint loaded ← {path}")
+                logger.info(f"{name}: fine-tuned checkpoint loaded <- {path}")
+                return model
             except Exception as e:
-                logger.warning(f"{name}: checkpoint load failed ({e}) — using ImageNet weights.")
+                logger.warning(f"{name}: checkpoint load failed ({e}) — SKIPPING this model.")
+                return None
         else:
-            logger.info(f"{name}: no checkpoint found — using ImageNet pretrained weights.")
-        return model
+            logger.warning(
+                f"{name}: no fine-tuned checkpoint found at {path} — "
+                f"SKIPPING this model (refusing to use untrained weights)."
+            )
+            return None
 
     # ──────────────────────────────────────────────────────────
     # MAIN INFERENCE
@@ -413,33 +430,38 @@ class EnsembleEngine:
                         early_exit_triggered= False,
                     )
 
-            # ── ResNet-50 + EfficientNet-B1 inference ─────────
+            # ── Secondary models inference (only if loaded) ────
+            probs_map = {"efficientnet_b0": b0_probs}
+            used_ensemble = False
+
             with torch.no_grad():
-                r50_probs = temperature_scale(self._resnet50(img_tensor), self.temperature)
-                b1_probs  = temperature_scale(self._efficientnet_b1(img_tensor), self.temperature)
+                if self._resnet50 is not None:
+                    r50_probs = temperature_scale(self._resnet50(img_tensor), self.temperature)
+                    r50_top = r50_probs.argmax().item()
+                    logger.info(
+                        f"[R50] top={self.class_names[r50_top]!r} "
+                        f"conf={r50_probs.max().item():.4f} entropy={shannon_entropy(r50_probs):.3f}"
+                    )
+                    probs_map["resnet50"] = r50_probs
+                    used_ensemble = True
 
-            r50_max = r50_probs.max().item()
-            b1_max  = b1_probs.max().item()
-            r50_top = r50_probs.argmax().item()
-            b1_top  = b1_probs.argmax().item()
+                if self._efficientnet_b1 is not None:
+                    b1_probs = temperature_scale(self._efficientnet_b1(img_tensor), self.temperature)
+                    b1_top = b1_probs.argmax().item()
+                    logger.info(
+                        f"[B1]  top={self.class_names[b1_top]!r} "
+                        f"conf={b1_probs.max().item():.4f} entropy={shannon_entropy(b1_probs):.3f}"
+                    )
+                    probs_map["efficientnet_b1"] = b1_probs
+                    used_ensemble = True
 
-            logger.info(
-                f"[R50] top={self.class_names[r50_top]!r} "
-                f"conf={r50_max:.4f} entropy={shannon_entropy(r50_probs):.3f}"
-            )
-            logger.info(
-                f"[B1]  top={self.class_names[b1_top]!r} "
-                f"conf={b1_max:.4f} entropy={shannon_entropy(b1_probs):.3f}"
-            )
+            if not used_ensemble:
+                logger.info("No secondary models available — using B0 only.")
 
             return self._build_result(
-                probs_map   = {
-                    "efficientnet_b0": b0_probs,
-                    "resnet50":        r50_probs,
-                    "efficientnet_b1": b1_probs,
-                },
+                probs_map   = probs_map,
                 top_k       = top_k,
-                used_ensemble       = True,
+                used_ensemble       = used_ensemble,
                 early_exit_triggered= False,
             )
 

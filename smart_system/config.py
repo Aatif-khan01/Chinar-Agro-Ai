@@ -67,7 +67,7 @@ YIELD_META_PATH     = os.path.join(YIELD_MODEL_DIR, "model_metadata.json")
 MODEL_INFO: Dict[str, dict] = {
     'disease': {
         'name':         'Plant Disease Detector',
-        'architecture': 'ResNet50 CNN (Fine-tuned)',
+        'architecture': 'EfficientNet-B0 CNN (Fine-tuned)',
         'framework':    'PyTorch + Torchvision',
         'dataset':      'PlantVillage + PlantDoc + Cassava Leaf Disease',
         'dataset_size': '~115,000 images',
