@@ -1,9 +1,6 @@
 import os
-import google.generativeai as genai
+from google import genai
 
-# We use the known working model alias from the previous Gemini Integration
-def get_model():
-    return genai.GenerativeModel('gemini-flash-latest')
 
 def generate_farming_response(user_question: str) -> str:
     """
@@ -14,8 +11,7 @@ def generate_farming_response(user_question: str) -> str:
         return "AI assistant is currently unavailable. Please check that GEMINI_API_KEY is configured."
 
     try:
-        genai.configure(api_key=api_key)
-        model = get_model()
+        client = genai.Client(api_key=api_key)
         
         prompt = f"""
         You are an elite, expert agricultural advisor helping farmers make data-driven decisions.
@@ -40,7 +36,10 @@ def generate_farming_response(user_question: str) -> str:
         Keep the tone professional, authoritative, yet easy to understand for a farmer.
         """
         
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         return response.text.strip()
         
     except Exception as e:

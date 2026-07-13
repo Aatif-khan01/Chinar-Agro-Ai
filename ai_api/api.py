@@ -28,7 +28,7 @@ from datetime import datetime
 from typing import Optional
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 # ── Add project root to sys.path ──────────────────────────────
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -44,6 +44,7 @@ import uvicorn
 
 from smart_system.recommendations import RecommendationEngine
 from smart_system.farm_ai_assistant import generate_farming_response
+from smart_system.gemini_advisor import generate_crop_advice
 
 # ══════════════════════════════════════════════════════════════
 # PART 6 — LOGGING SYSTEM
@@ -829,7 +830,6 @@ async def predict_crop(request: CropRequest):
                 "recommended_crop": crop_name,
                 "confidence":       round(confidence, 1),
                 "agronomic_advice": advice,
-                "ai_advice":        result.get("ai_advice", "AI advice temporally unavailable."),
                 # C1 — Top-3 alternative crop recommendations
                 "top_recommendations": [
                     {"crop": crop, "confidence": round(conf, 1)}
@@ -843,6 +843,56 @@ async def predict_crop(request: CropRequest):
         raise
     except Exception as e:
         error_response(f"Crop prediction exception: {e}")
+
+
+@app.post("/ask-ai-crop")
+async def ask_ai_crop(request: CropRequest):
+    """On-demand Gemini AI advice for crop recommendations (saves API quota)."""
+    log_request("/ask-ai-crop", request.dict())
+    try:
+        input_data = {
+            'N': request.Nitrogen,
+            'P': request.Phosphorus,
+            'K': request.Potassium,
+            'temperature': request.Temperature,
+            'humidity': request.Humidity,
+            'ph': request.pH,
+            'rainfall': request.Rainfall,
+        }
+
+        # Run crop prediction to get the recommended crop
+        if not _crop_loaded or crop_engine is None:
+            error_response("Crop model is not loaded", 503)
+
+        result = crop_engine.predict(
+            N=request.Nitrogen,
+            P=request.Phosphorus,
+            K=request.Potassium,
+            temperature=request.Temperature,
+            humidity=request.Humidity,
+            ph=request.pH,
+            rainfall=request.Rainfall,
+        )
+
+        if not result.get("success"):
+            error_response("Crop prediction failed before AI advice could be generated")
+
+        prediction_summary = {
+            'top_crop': result['crop_name'],
+            'alternatives': [opt[0] for opt in result.get('top_predictions', [])[1:4]]
+        }
+
+        ai_advice = generate_crop_advice(input_data, prediction_summary)
+
+        return {
+            "status": "success",
+            "ai_advice": ai_advice
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_response(f"AI crop advice exception: {e}")
 
 
 @app.post("/predict-yield")

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Droplets, CheckCircle, AlertTriangle, Loader2, Brain, Leaf, Sun, CloudRain, FlaskConical, Layers, Hexagon, Sprout } from 'lucide-react';
+import { Droplets, CheckCircle, AlertTriangle, Loader2, Brain, Leaf, Sun, CloudRain, FlaskConical, Layers, Hexagon, Sprout, Sparkles } from 'lucide-react';
 
 const Crop = () => {
     const { t } = useTranslation();
@@ -18,6 +18,20 @@ const Crop = () => {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
+    const [aiAdvice, setAiAdvice] = useState(null);
+    const [aiLoading, setAiLoading] = useState(false);
+
+    const handleAskAI = async () => {
+        setAiLoading(true);
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/ask-ai-crop`, formData);
+            setAiAdvice(data.ai_advice);
+        } catch (err) {
+            setAiAdvice('AI advice is currently unavailable. Please try again later.');
+        } finally {
+            setAiLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: parseFloat(e.target.value) });
@@ -28,6 +42,7 @@ const Crop = () => {
         setLoading(true);
         setError(null);
         setResult(null);
+        setAiAdvice(null);
 
         try {
             const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/predict-crop`, formData);
@@ -241,22 +256,36 @@ const Crop = () => {
                                     </div>
                                 )}
 
-                                {result.ai_advice && (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.6 }}
-                                        className="mt-6 relative z-10 w-full mb-4"
-                                    >
-                                        <h4 className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest mb-3 border-b border-amber-500/20 pb-2 drop-shadow-[0_0_5px_currentColor]">
-                                            <Brain className="w-4 h-4 text-amber-400" />
-                                            {t('crop_ai_advisor')}
-                                        </h4>
+                                {/* On-demand AI Advice Section */}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.6 }}
+                                    className="mt-6 relative z-10 w-full mb-4"
+                                >
+                                    <h4 className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest mb-3 border-b border-amber-500/20 pb-2 drop-shadow-[0_0_5px_currentColor]">
+                                        <Brain className="w-4 h-4 text-amber-400" />
+                                        {t('crop_ai_advisor')}
+                                    </h4>
+
+                                    {aiAdvice ? (
                                         <div className="text-sm text-amber-100/80 leading-relaxed bg-gradient-to-br from-amber-500/10 to-transparent p-5 rounded-xl border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] whitespace-pre-wrap font-light tracking-wide">
-                                            {result.ai_advice}
+                                            {aiAdvice}
                                         </div>
-                                    </motion.div>
-                                )}
+                                    ) : (
+                                        <button
+                                            onClick={handleAskAI}
+                                            disabled={aiLoading}
+                                            className="w-full py-3 px-4 bg-gradient-to-r from-amber-600/80 to-amber-500/80 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all duration-300 font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 border border-amber-400/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {aiLoading ? (
+                                                <><Loader2 className="w-4 h-4 animate-spin" /> Generating AI Advice...</>
+                                            ) : (
+                                                <><Sparkles className="w-4 h-4" /> Ask Gemini AI for Advice</>
+                                            )}
+                                        </button>
+                                    )}
+                                </motion.div>
                             </motion.div>
                         )}
                     </AnimatePresence>
