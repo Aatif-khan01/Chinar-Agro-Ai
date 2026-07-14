@@ -14,9 +14,34 @@
 
 ---
 
-[Features](#-features) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [API Reference](#-api-reference) · [Supported Crops & Diseases](#-supported-crops--diseases) · [Deployment](#-deployment)
+[Overview](#-project-overview) · [Features](#-features) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [API Reference](#-api-reference) · [Supported Crops & Diseases](#-supported-crops--diseases) · [Deployment](#-deployment)
 
 </div>
+
+---
+
+## 📖 Project Overview
+
+**Chinar Agro AI** is an end-to-end intelligent agricultural advisory platform designed to empower farmers, agronomists, and agricultural researchers with AI-driven decision support. The system addresses critical challenges in modern agriculture — crop disease identification, optimal crop selection, yield estimation, and counterfeit pesticide detection — through a unified, multilingual web interface.
+
+### The Problem
+Farmers in developing regions face significant losses due to undiagnosed crop diseases, suboptimal crop choices for their soil conditions, unpredictable yields, and widespread counterfeit pesticides. Access to expert agronomic advice is limited and expensive.
+
+### Our Solution
+Chinar Agro AI brings laboratory-grade agricultural intelligence directly to the farmer's device:
+
+- **🔬 Upload a leaf photo** → Get instant disease diagnosis with treatment recommendations across **52 disease classes** and **14 crop species**
+- **🌾 Enter soil & weather data** → Receive AI-optimized crop recommendations from **22 crop types** with confidence scores
+- **📊 Select region & crop** → Get yield forecasts trained on **8.7 million historical records** covering **500+ crop types** worldwide
+- **🧪 Scan a pesticide label** → Run an 11-step AI authentication pipeline to detect counterfeit products
+- **🤖 Ask any farming question** → Get expert advice from an AI farm assistant in English, Hindi, or Urdu
+- **📑 Generate reports** → Compile comprehensive farm intelligence reports with one-click branded PDF export
+
+### Who Is This For?
+- **Farmers** — Get instant crop health diagnosis and personalized recommendations without needing an agronomist
+- **Agricultural Extension Officers** — Use the platform as a diagnostic aid in the field
+- **Researchers & Students** — Explore multi-model ensemble architectures, feature engineering, and AI-driven pipelines
+- **Agri-Tech Startups** — A production-ready reference architecture for agricultural AI systems
 
 ---
 
