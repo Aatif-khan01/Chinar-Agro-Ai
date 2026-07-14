@@ -67,3 +67,9 @@ old_*.py
 err.txt
 models.txt
 fix_paths.py
+
+# Scratch / temp working files
+scratch/
+
+# React build output
+frontend/build/

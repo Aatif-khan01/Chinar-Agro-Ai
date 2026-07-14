@@ -6,7 +6,7 @@ import {
   UploadCloud, Leaf, Activity, AlertTriangle,
   ShieldCheck, ShieldAlert, ShieldX, Info, Bug,
   ThermometerSun, Eye, Layers, Image as ImageIcon, ChevronRight,
-  Zap, Heart, Microscope, Pill, Lightbulb
+  Zap, Heart, Microscope, Pill, Lightbulb, Trash2
 } from 'lucide-react';
 import { PageHeader, Button, Badge, ProgressBar, SectionHeader, Tilt, Card } from '../design-system/components';
 import { pageVariants, pageTransition, fadeInLeft, fadeInRight, slideUp, staggerContainer } from '../design-system/animations';
@@ -254,13 +254,27 @@ const Disease = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="relative w-full h-full flex items-center justify-center p-3"
+                    className="relative w-full h-full flex items-center justify-center p-3 group"
                   >
                     <img
                       src={imageView === 'overlay' && result?.visual_output ? `${result.visual_output}?t=${Date.now()}` : preview}
                       alt="Botanical Capture"
                       className="w-full max-h-[350px] object-contain rounded-lg"
                     />
+                    
+                    {/* Delete Specimen Button */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReset();
+                      }}
+                      className="absolute top-4 right-4 p-2 rounded-lg bg-surface-900/90 border border-white/10 text-white/60 hover:text-white hover:bg-danger/20 hover:border-danger/30 transition-all shadow-md z-30 flex items-center justify-center"
+                      title="Remove Specimen"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
                     {imageView === 'overlay' && result && (
                       <div className="absolute bottom-4 left-4 right-4 p-2 bg-surface-900/80 backdrop-blur-md rounded border border-white/[0.04] text-[9px] font-mono tracking-widest text-brand-400 uppercase text-center">
                         Grad-CAM Output Calibration Matrix

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle, Info, Leaf, Bug, Eye, ClipboardList, FileSearch, Lightbulb, ChevronDown, ChevronUp, XCircle, Search, Fingerprint, CalendarCheck, Hash, BarChart3, ListChecks, MessageSquare } from 'lucide-react';
+import { Upload, ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle, Info, Leaf, Bug, Eye, ClipboardList, FileSearch, Lightbulb, ChevronDown, ChevronUp, XCircle, Search, Fingerprint, CalendarCheck, Hash, BarChart3, ListChecks, MessageSquare, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function PesticideAuth() {
@@ -27,6 +27,14 @@ export default function PesticideAuth() {
       setError('');
     }
   };
+
+  const handleReset = () => {
+    setImage(null);
+    setPreview(null);
+    setResult(null);
+    setError('');
+  };
+
 
   const handleVerify = async () => {
     if (!image) return;
@@ -148,7 +156,20 @@ export default function PesticideAuth() {
           <div className="relative border-2 border-dashed border-white/20 rounded-2xl p-8 hover:border-brand-500/50 hover:bg-brand-500/5 transition-all group overflow-hidden">
             <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
             {preview ? (
-              <img src={preview} alt="Preview" className="mx-auto max-h-[300px] object-contain rounded-xl shadow-lg" />
+              <div className="relative w-full h-full flex items-center justify-center group/preview">
+                <img src={preview} alt="Preview" className="mx-auto max-h-[300px] object-contain rounded-xl shadow-lg" />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReset();
+                  }}
+                  className="absolute top-2 right-2 p-2 rounded-lg bg-surface-900/90 border border-white/10 text-white/60 hover:text-white hover:bg-danger/20 hover:border-danger/30 transition-all shadow-md z-30 flex items-center justify-center"
+                  title="Remove Image"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center text-slate-400 gap-4 py-12">
                 <div className="p-4 rounded-full bg-slate-800/50 group-hover:scale-110 transition-transform">

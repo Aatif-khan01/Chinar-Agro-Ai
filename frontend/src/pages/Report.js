@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { FileText, CheckCircle, AlertTriangle, UploadCloud, Map, Droplets, Sprout, TrendingUp, ShieldAlert, Sparkles, CloudRain, Gauge, FileDown, Loader2 } from 'lucide-react';
+import { FileText, CheckCircle, AlertTriangle, UploadCloud, Map, Droplets, Sprout, TrendingUp, ShieldAlert, Sparkles, CloudRain, Gauge, FileDown, Loader2, Trash2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { PageHeader, Card, Button, Input, InputGroup, Badge, SectionHeader, Tilt } from '../design-system/components';
 import { pageVariants, pageTransition, fadeInLeft, fadeInRight, slideUp } from '../design-system/animations';
@@ -377,11 +377,25 @@ const Report = () => {
                   >
                     <input id="report-file" type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
                     {preview ? (
-                      <motion.img
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        src={preview} alt="Leaf Specimen" className="h-20 object-contain rounded shadow"
-                      />
+                      <div className="relative w-full flex items-center justify-center group/preview">
+                        <motion.img
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          src={preview} alt="Leaf Specimen" className="h-20 object-contain rounded shadow"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFile(null);
+                            setPreview(null);
+                          }}
+                          className="absolute -top-1 -right-1 p-1 rounded-md bg-surface-900/90 border border-white/10 text-white/60 hover:text-white hover:bg-danger/20 hover:border-danger/30 transition-all shadow-md z-30 flex items-center justify-center"
+                          title="Remove Image"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     ) : (
                       <span className="text-white/20 uppercase tracking-widest text-[9px] font-bold">specimen leaf image</span>
                     )}
