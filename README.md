@@ -306,19 +306,6 @@ npm run build
 
 ---
 
-## 👥 Team
-
-**Chinar Agro AI Team**
-- Built with ❤️ for precision agriculture and farmer empowerment
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
 <div align="center">
 
 **🌿 Chinar Agro AI — Empowering Farmers with Artificial Intelligence 🌿**
