@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { FileText, CheckCircle, AlertTriangle, UploadCloud, Map, Droplets, Sprout, TrendingUp, ShieldAlert, Sparkles, CloudRain, Gauge, FileDown, Loader2, Trash2 } from 'lucide-react';
+import { FileText, AlertTriangle, UploadCloud, Map, Droplets, Sprout, TrendingUp, ShieldAlert, Sparkles, CloudRain, Gauge, FileDown, Loader2, Trash2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { PageHeader, Card, Button, Input, InputGroup, Badge, SectionHeader, Tilt } from '../design-system/components';
 import { pageVariants, pageTransition, fadeInLeft, fadeInRight, slideUp } from '../design-system/animations';

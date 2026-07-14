@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle, Info, Leaf, Bug, Eye, ClipboardList, FileSearch, Lightbulb, ChevronDown, ChevronUp, XCircle, Search, Fingerprint, CalendarCheck, Hash, BarChart3, ListChecks, MessageSquare, Trash2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { Upload, ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle, Info, Leaf, Bug, Eye, FileSearch, ChevronDown, ChevronUp, XCircle, Search, Fingerprint, CalendarCheck, Hash, ListChecks, MessageSquare, Trash2 } from 'lucide-react';
 
 export default function PesticideAuth() {
-  const { t } = useTranslation();
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [targetCrop, setTargetCrop] = useState('');
