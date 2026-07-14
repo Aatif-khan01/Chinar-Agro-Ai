@@ -2,297 +2,262 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Droplets, CheckCircle, AlertTriangle, Loader2, Brain, Leaf, Sun, CloudRain, FlaskConical, Layers, Hexagon, Sprout, Sparkles } from 'lucide-react';
+import {
+  Droplets, AlertTriangle, Brain, Leaf, Sun, CloudRain,
+  FlaskConical, Layers, Hexagon, Sprout, Sparkles, Sliders
+} from 'lucide-react';
+import { PageHeader, Card, Button, ProgressBar, SectionHeader, Tilt } from '../design-system/components';
+import { pageVariants, pageTransition, fadeInLeft, fadeInRight, slideUp } from '../design-system/animations';
 
 const Crop = () => {
-    const { t } = useTranslation();
-    const [formData, setFormData] = useState({
-        Nitrogen: 90,
-        Phosphorus: 40,
-        Potassium: 40,
-        Temperature: 28,
-        Humidity: 70,
-        pH: 6.5,
-        Rainfall: 200
-    });
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null);
-    const [error, setError] = useState(null);
-    const [aiAdvice, setAiAdvice] = useState(null);
-    const [aiLoading, setAiLoading] = useState(false);
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    Nitrogen: 90, Phosphorus: 40, Potassium: 40,
+    Temperature: 28, Humidity: 70, pH: 6.5, Rainfall: 200
+  });
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [aiAdvice, setAiAdvice] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
-    const handleAskAI = async () => {
-        setAiLoading(true);
-        try {
-            const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/ask-ai-crop`, formData);
-            setAiAdvice(data.ai_advice);
-        } catch (err) {
-            setAiAdvice('AI advice is currently unavailable. Please try again later.');
-        } finally {
-            setAiLoading(false);
-        }
-    };
+  const handleAskAI = async () => {
+    setAiLoading(true);
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/ask-ai-crop`, formData);
+      setAiAdvice(data.ai_advice);
+    } catch (err) {
+      setAiAdvice('AI advisory node is currently unreachable. Try again later.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: parseFloat(e.target.value) });
-    };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: parseFloat(e.target.value) });
+  };
 
-    const handlePredict = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setResult(null);
-        setAiAdvice(null);
+  const handlePredict = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setAiAdvice(null);
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/predict-crop`, formData);
+      setResult(data);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to connect to ML prediction pipeline.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/predict-crop`, formData);
-            setResult(data);
-        } catch (err) {
-            setError(err.response?.data?.error || 'Failed to initialize array.');
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fields = [
+    { name: 'Nitrogen', labelKey: 'crop_nitrogen', icon: Layers, unit: 'kg/ha', color: 'text-amber-500' },
+    { name: 'Phosphorus', labelKey: 'crop_phosphorus', icon: Hexagon, unit: 'kg/ha', color: 'text-brand-400' },
+    { name: 'Potassium', labelKey: 'crop_potassium', icon: Leaf, unit: 'kg/ha', color: 'text-emerald-500' },
+    { name: 'Temperature', labelKey: 'crop_temperature', icon: Sun, unit: '°C', color: 'text-orange-500' },
+    { name: 'Humidity', labelKey: 'crop_humidity', icon: Droplets, unit: '%', color: 'text-sky-500' },
+    { name: 'pH', labelKey: 'crop_ph', icon: FlaskConical, unit: 'pH', color: 'text-brand-300' },
+    { name: 'Rainfall', labelKey: 'crop_rainfall', icon: CloudRain, unit: 'mm', color: 'text-blue-500' },
+  ];
 
-    const fields = [
-        { name: 'Nitrogen',    labelKey: 'crop_nitrogen',    icon: Layers,      unit: 'kg/ha',  color: 'text-soil-400'    },
-        { name: 'Phosphorus',  labelKey: 'crop_phosphorus',  icon: Hexagon,     unit: 'kg/ha',  color: 'text-brand-400'   },
-        { name: 'Potassium',   labelKey: 'crop_potassium',   icon: Leaf,        unit: 'kg/ha',  color: 'text-harvest-400' },
-        { name: 'Temperature', labelKey: 'crop_temperature', icon: Sun,         unit: '°C',     color: 'text-amber-500'   },
-        { name: 'Humidity',    labelKey: 'crop_humidity',    icon: Droplets,    unit: '%',      color: 'text-sky-400'     },
-        { name: 'pH',          labelKey: 'crop_ph',          icon: FlaskConical,unit: 'level',  color: 'text-brand-300'   },
-        { name: 'Rainfall',    labelKey: 'crop_rainfall',    icon: CloudRain,   unit: 'mm',     color: 'text-blue-400'    },
-    ];
+  return (
+    <motion.div
+      {...pageVariants}
+      transition={pageTransition}
+      className="space-y-8 pb-16"
+    >
+      <PageHeader
+        icon={Sprout}
+        title={t('crop_title')}
+        subtitle="Cultivar Suitability Calibrator"
+      />
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            className="p-8 lg:p-12 max-w-5xl mx-auto h-full text-slate-100 relative z-10"
-        >
-            <div className="mb-12 text-center">
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-soil-500 to-soil-700 flex items-center justify-center shadow-[0_0_30px_rgba(109,76,65,0.5)]"
-                >
-                    <Sprout className="w-8 h-8 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                </motion.div>
-                <h1 className="text-4xl font-extrabold mb-3 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
-                    {t('crop_title')}
-                </h1>
-                <p className="text-slate-400 font-light tracking-widest text-sm uppercase">
-                    {t('crop_subtitle')}
-                </p>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* LEFT COLUMN: Calibration Parameter Inputs */}
+        <motion.div {...fadeInLeft} className="lg:col-span-5 flex flex-col gap-6">
+          <div className="flex flex-col">
+            <h2 className="text-[11px] font-bold text-white/30 uppercase tracking-widest font-mono flex items-center gap-2">
+              <Sliders className="w-3.5 h-3.5 text-brand-400" /> Soil Biosphere Calibrator
+            </h2>
+            <p className="text-caption text-white/20 mt-1 leading-relaxed">
+              Adjust Nitrogen, Phosphorus, Potassium, and geographical metrics.
+            </p>
+          </div>
 
-            <div className="grid lg:grid-cols-2 gap-10">
-                {/* Form */}
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="glass-card p-10 relative overflow-hidden group"
-                >
-                    <div className="absolute inset-0 bg-brand-500/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
-
-                    <form onSubmit={handlePredict} className="grid grid-cols-2 gap-6 relative z-10">
-                        {fields.map(f => (
-                            <div key={f.name} className={f.name === 'Rainfall' ? 'col-span-2' : ''}>
-                                <label className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
-                                    <f.icon className={`w-4 h-4 ${f.color} drop-shadow-[0_0_5px_currentColor]`} />
-                                    {t(f.labelKey)}
-                                    <span className="text-slate-500 lowercase opacity-50 ml-auto">({f.unit})</span>
-                                </label>
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    name={f.name}
-                                    value={formData[f.name]}
-                                    onChange={handleChange}
-                                    required
-                                    className="glowing-input font-mono text-lg tracking-wider"
-                                />
-                            </div>
-                        ))}
-                        <div className="col-span-2 pt-6 mt-2 border-t border-white/10">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className={`btn-primary w-full py-4 rounded-xl transition-all duration-300 font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 ${loading && 'opacity-50 cursor-not-allowed shadow-none border-t border-white/5'}`}
-                            >
-                                {loading
-                                    ? <Loader2 className="animate-spin w-5 h-5 drop-shadow-[0_0_5px_currentColor]" />
-                                    : <Sprout className="w-5 h-5 drop-shadow-[0_0_5px_currentColor]" />}
-                                {loading ? t('crop_btn_loading') : t('crop_btn_analyze')}
-                            </button>
-                        </div>
-                    </form>
-                </motion.div>
-
-                {/* Results */}
-                <motion.div
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="h-full relative"
-                >
-                    <AnimatePresence mode="wait">
-                        {error && (
-                            <motion.div
-                                key="error"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="glass-card !bg-red-500/10 !border-red-500/30 p-6 flex gap-4 text-red-200 shadow-[0_0_30px_rgba(239,68,68,0.2)] mb-6"
-                            >
-                                <AlertTriangle className="w-6 h-6 shrink-0 drop-shadow-[0_0_5px_currentColor]" />
-                                <p className="font-medium tracking-wide">{error}</p>
-                            </motion.div>
-                        )}
-
-                        {!result && !error && !loading && (
-                            <motion.div
-                                key="placeholder"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="glass-card p-10 flex flex-col items-center justify-center text-center h-[500px] border-dashed !bg-white/5"
-                            >
-                                <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] border border-white/10">
-                                    <Sprout className="w-10 h-10 text-slate-500 drop-shadow-[0_0_5px_rgba(255,255,255,0.1)]" />
-                                </div>
-                                <p className="text-slate-400 font-light tracking-wide max-w-[200px]">
-                                    {t('crop_placeholder')}
-                                </p>
-                            </motion.div>
-                        )}
-
-                        {result && (
-                            <motion.div
-                                key="result"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="glass-card overflow-hidden h-full flex flex-col p-8 relative group overflow-y-auto"
-                            >
-                                <div className="absolute inset-0 bg-brand-500/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-80 transition-opacity" />
-
-                                <div className="flex flex-col items-center justify-center mb-6">
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ type: "spring", bounce: 0.5, delay: 0.1 }}
-                                        className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4 backdrop-blur-md shadow-[0_0_30px_rgba(76,175,80,0.3)] border border-brand-500/50 relative z-10"
-                                    >
-                                        <CheckCircle className="w-10 h-10 text-brand-400 drop-shadow-[0_0_10px_currentColor]" />
-                                    </motion.div>
-
-                                    <div className="w-full text-center relative z-10">
-                                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">
-                                            {t('crop_recommended')}
-                                        </p>
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: 0.3 }}
-                                            className="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-brand-300 capitalize drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
-                                        >
-                                            {result.recommended_crop}
-                                        </motion.div>
-                                    </div>
-
-                                    {result.confidence && (
-                                        <div className="w-full max-w-xs relative z-10 mt-4">
-                                            <div className="flex justify-between items-end mb-1">
-                                                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
-                                                    {t('crop_confidence')}
-                                                </p>
-                                                <span className="font-bold text-brand-300 drop-shadow-[0_0_5px_currentColor] text-sm">
-                                                    {result.confidence.toFixed(1)}%
-                                                </span>
-                                            </div>
-                                            <div className="h-1.5 rounded-full bg-white/10 overflow-hidden shadow-inner">
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${result.confidence}%` }}
-                                                    transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-                                                    className="h-full bg-gradient-to-r from-brand-500 to-brand-400 rounded-full shadow-[0_0_15px_rgba(76,175,80,0.8)]"
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {result.top_recommendations && result.top_recommendations.length > 0 && (
-                                    <div className="mt-4 relative z-10 w-full mb-6">
-                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-white/10 pb-2">
-                                            {t('crop_alternatives')}
-                                        </h4>
-                                        <div className="space-y-3">
-                                            {result.top_recommendations.map((rec, i) => (
-                                                <div key={i} className="flex items-center justify-between text-sm bg-white/5 p-3 rounded-lg border border-white/5 shadow-sm">
-                                                    <span className="font-semibold text-brand-200 capitalize">{rec.crop}</span>
-                                                    <span className="text-brand-400 font-mono tracking-widest">{rec.confidence}%</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {result.agronomic_advice && result.agronomic_advice.length > 0 && (
-                                    <div className="mt-2 relative z-10 w-full mb-4">
-                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-white/10 pb-2">
-                                            {t('crop_advice')}
-                                        </h4>
-                                        <ul className="space-y-3">
-                                            {result.agronomic_advice.map((advice, i) => (
-                                                <li key={i} className="flex gap-3 text-sm text-slate-300 leading-relaxed bg-brand-900/10 p-3 rounded-lg border border-brand-500/10 hover:border-brand-500/30 transition-colors">
-                                                    <span className="text-brand-400 shrink-0 mt-0.5">•</span>
-                                                    <span>{advice}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-
-                                {/* On-demand AI Advice Section */}
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.6 }}
-                                    className="mt-6 relative z-10 w-full mb-4"
-                                >
-                                    <h4 className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest mb-3 border-b border-amber-500/20 pb-2 drop-shadow-[0_0_5px_currentColor]">
-                                        <Brain className="w-4 h-4 text-amber-400" />
-                                        {t('crop_ai_advisor')}
-                                    </h4>
-
-                                    {aiAdvice ? (
-                                        <div className="text-sm text-amber-100/80 leading-relaxed bg-gradient-to-br from-amber-500/10 to-transparent p-5 rounded-xl border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] whitespace-pre-wrap font-light tracking-wide">
-                                            {aiAdvice}
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={handleAskAI}
-                                            disabled={aiLoading}
-                                            className="w-full py-3 px-4 bg-gradient-to-r from-amber-600/80 to-amber-500/80 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all duration-300 font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 border border-amber-400/30 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            {aiLoading ? (
-                                                <><Loader2 className="w-4 h-4 animate-spin" /> Generating AI Advice...</>
-                                            ) : (
-                                                <><Sparkles className="w-4 h-4" /> Ask Gemini AI for Advice</>
-                                            )}
-                                        </button>
-                                    )}
-                                </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.div>
-            </div>
+          <Tilt spotlight={true} intensity={20}>
+            <Card variant="glass" padding="md" className="relative">
+              <form onSubmit={handlePredict} className="space-y-5">
+                <div className="grid grid-cols-2 gap-4">
+                  {fields.map(f => (
+                    <div key={f.name} className={f.name === 'Rainfall' ? 'col-span-2' : ''}>
+                      <label className="flex items-center justify-between mb-1.5 text-white/50 text-[10px] uppercase tracking-wider font-semibold font-mono">
+                        <span className="flex items-center gap-1.5">
+                          <f.icon className={`w-3.5 h-3.5 ${f.color}`} />
+                          {t(f.labelKey)}
+                        </span>
+                        <span className="text-white/20 text-[9px] font-normal font-sans">({f.unit})</span>
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        name={f.name}
+                        value={formData[f.name]}
+                        onChange={handleChange}
+                        required
+                        className="console-input font-mono"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="pt-4 border-t border-white/[0.04]">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
+                    loading={loading}
+                    type="submit"
+                    icon={Sprout}
+                  >
+                    Analyze Cultivar
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </Tilt>
         </motion.div>
-    );
+
+        {/* RIGHT COLUMN: Output matrix */}
+        <motion.div {...fadeInRight} className="lg:col-span-7 space-y-6">
+          <AnimatePresence mode="wait">
+            
+            {/* Error */}
+            {error && (
+              <motion.div
+                key="error"
+                {...slideUp}
+                className="p-4 rounded-lg bg-danger/10 border border-danger/20 flex gap-3 text-danger-light text-body-sm font-mono"
+              >
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold">METRIC ANOMALY</h4>
+                  <p className="text-white/50 mt-1">{error}</p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Placeholder */}
+            {!result && !error && !loading && (
+              <motion.div
+                key="placeholder"
+                {...slideUp}
+                className="border border-dashed border-white/5 bg-surface-800/10 rounded-xl p-16 flex flex-col items-center justify-center text-center min-h-[460px]"
+              >
+                <div className="w-12 h-12 rounded-full bg-white/[0.01] border border-white/[0.04] flex items-center justify-center mb-4">
+                  <Sprout className="w-5 h-5 text-white/20" />
+                </div>
+                <h4 className="font-heading text-body-md text-white/50 font-semibold">Calibration Matrix Status</h4>
+                <p className="text-caption text-white/20 mt-1 max-w-xs leading-relaxed">
+                  Calibrate parameters and click analyze to compute the optimal botanical recommendation.
+                </p>
+              </motion.div>
+            )}
+
+            {/* Calibration output report */}
+            {result && (
+              <motion.div
+                key="result"
+                {...slideUp}
+                className="space-y-6 animate-fadeIn"
+              >
+                {/* 1. Main Recommendation banner */}
+                <Tilt spotlight={true} intensity={25}>
+                  <Card variant="glass" padding="md" className="relative overflow-hidden border-brand-500/10">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/[0.02] rounded-full blur-[60px]" />
+                    <div className="flex flex-col items-center justify-center text-center py-6">
+                      <div className="w-12 h-12 bg-white/[0.02] border border-white/[0.04] rounded-full flex items-center justify-center mb-3">
+                        <Sprout className="w-6 h-6 text-brand-400" />
+                      </div>
+                      <span className="text-[9px] text-white/30 uppercase tracking-widest font-mono font-bold">
+                        {t('crop_recommended')}
+                      </span>
+                      <h2 className="font-heading text-display-md font-bold text-white capitalize tracking-tight mt-1">
+                        {result.recommended_crop}
+                      </h2>
+                      {result.confidence && (
+                        <div className="w-full max-w-xs mt-6">
+                          <ProgressBar
+                            value={result.confidence}
+                            label="Confidence Calibrator Match"
+                            color={{ bar: 'from-brand-600 to-brand-400', glow: 'rgba(34,169,106,0.15)', text: 'text-brand-300' }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                </Tilt>
+
+                {/* 2. Top recommendations alternatives matrix */}
+                {result.top_recommendations?.length > 0 && (
+                  <Card variant="glass" padding="md">
+                    <SectionHeader title={t('crop_alternatives')} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                      {result.top_recommendations.map((rec, i) => (
+                        <div key={i} className="flex items-center justify-between bg-white/[0.01] border border-white/[0.03] p-3 rounded-lg font-mono text-body-sm">
+                          <span className="font-semibold text-brand-200 capitalize">{rec.crop}</span>
+                          <span className="text-brand-400 font-bold">{rec.confidence}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                )}
+
+                {/* 3. Agronomic Advice details */}
+                {result.agronomic_advice?.length > 0 && (
+                  <Card variant="glass" padding="md">
+                    <SectionHeader title={t('crop_advice')} />
+                    <ul className="space-y-3 font-light mt-4">
+                      {result.agronomic_advice.map((advice, i) => (
+                        <li key={i} className="flex gap-3 text-body-sm text-white/50 leading-relaxed">
+                          <span className="w-1.5 h-1.5 bg-brand-500 rounded-full mt-2 shrink-0" />
+                          <span>{advice}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                )}
+
+                {/* 4. AI Advisory node */}
+                <Card variant="glass" padding="md">
+                  <SectionHeader icon={Brain} title={t('crop_ai_advisor')} iconColor="text-accent-500" />
+                  <div className="mt-4">
+                    {aiAdvice ? (
+                      <div className="text-body-sm text-white/60 leading-relaxed bg-white/[0.01] border border-white/[0.03] p-5 rounded-lg whitespace-pre-wrap font-light">
+                        {aiAdvice}
+                      </div>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        fullWidth
+                        loading={aiLoading}
+                        icon={Sparkles}
+                        onClick={handleAskAI}
+                      >
+                        Initiate AI Advisory Analysis
+                      </Button>
+                    )}
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
 };
 
 export default Crop;

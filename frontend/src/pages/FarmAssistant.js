@@ -2,181 +2,184 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { BrainCircuit, Send, User, Bot, Loader2, Sparkles } from 'lucide-react';
+import { BrainCircuit, Send } from 'lucide-react';
+import { PageHeader, Card, PulseLoader } from '../design-system/components';
+import { pageVariants, pageTransition, slideUp } from '../design-system/animations';
 
 const FarmAssistant = () => {
-    const { t, i18n } = useTranslation();
-    const [messages, setMessages] = useState([]);
-    
-    // Set initial message using translations
-    useEffect(() => {
-        if (messages.length === 0) {
-            setMessages([{
-                id: 1,
-                sender: 'ai',
-                text: t('assistant_greeting')
-            }]);
-        } else if (messages.length === 1 && messages[0].sender === 'ai') {
-            // Update initial greeting when language changes
-            setMessages([{
-                id: 1,
-                sender: 'ai',
-                text: t('assistant_greeting')
-            }]);
-        }
-    }, [t, i18n.language]);
+  const { t, i18n } = useTranslation();
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
 
-    const [inputValue, setInputValue] = useState('');
-    const [loading, setLoading] = useState(false);
-    const messagesEndRef = useRef(null);
+  // Set initial message using translations
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([{
+        id: 1,
+        sender: 'ai',
+        text: t('assistant_greeting')
+      }]);
+    } else if (messages.length === 1 && messages[0].sender === 'ai') {
+      // Update initial greeting when language changes
+      setMessages([{
+        id: 1,
+        sender: 'ai',
+        text: t('assistant_greeting')
+      }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t, i18n.language]);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-    const handleSend = async (e) => {
-        e.preventDefault();
+  const handleSend = async (e) => {
+    e.preventDefault();
 
-        if (!inputValue.trim()) return;
+    if (!inputValue.trim()) return;
 
-        const userMsg = { id: Date.now(), sender: 'user', text: inputValue };
-        setMessages(prev => [...prev, userMsg]);
-        setInputValue('');
-        setLoading(true);
+    const userMsg = { id: Date.now(), sender: 'user', text: inputValue };
+    setMessages(prev => [...prev, userMsg]);
+    setInputValue('');
+    setLoading(true);
 
-        try {
-            const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/farm-assistant`, {
-                question: userMsg.text
-            });
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/farm-assistant`, {
+        question: userMsg.text
+      });
 
-            const aiMsg = {
-                id: Date.now() + 1,
-                sender: 'ai',
-                text: data.answer || "I'm sorry, I couldn't process that request."
-            };
-            setMessages(prev => [...prev, aiMsg]);
-        } catch (err) {
-            const errorMsg = {
-                id: Date.now() + 1,
-                sender: 'error',
-                text: err.response?.data?.error || "AI assistant is currently unavailable. Please try again later."
-            };
-            setMessages(prev => [...prev, errorMsg]);
-        } finally {
-            setLoading(false);
-        }
-    };
+      const aiMsg = {
+        id: Date.now() + 1,
+        sender: 'ai',
+        text: data.answer || "I'm sorry, I couldn't process that request."
+      };
+      setMessages(prev => [...prev, aiMsg]);
+    } catch (err) {
+      const errorMsg = {
+        id: Date.now() + 1,
+        sender: 'error',
+        text: err.response?.data?.error || "AI assistant is currently unavailable. Please try again later."
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            className="p-4 lg:p-8 max-w-5xl mx-auto h-[calc(100vh-8rem)] text-slate-100 relative z-10 flex flex-col"
-        >
-            <div className="mb-6 flex-shrink-0 text-center relative z-10">
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]"
-                >
-                    <BrainCircuit className="w-8 h-8 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                </motion.div>
-                <h1 className="text-3xl lg:text-4xl font-extrabold mb-2 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">{t('assistant_title')}</h1>
-                <p className="text-slate-400 font-light tracking-widest text-sm uppercase flex items-center justify-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" /> {t('assistant_subtitle')}
-                </p>
-            </div>
+  return (
+    <motion.div
+      {...pageVariants}
+      transition={pageTransition}
+      className="flex-1 flex flex-col h-[calc(100vh-8rem)] space-y-6 pb-6"
+    >
+      <PageHeader
+        icon={BrainCircuit}
+        title={t('assistant_title')}
+        subtitle="Gemini Advisory Console Terminal"
+        className="mb-0 flex-shrink-0"
+      />
 
-            <div className="glass-card flex-1 flex flex-col relative overflow-hidden group shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10">
-                {/* Subtle glow behind chat */}
-                <div className="absolute inset-0 bg-amber-500/5 blur-[100px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
+      <Card
+        variant="glass"
+        padding="none"
+        className="flex-1 flex flex-col relative overflow-hidden group shadow-lg border border-white/[0.04]"
+      >
+        {/* Subtle grid background */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.005)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
-                {/* Chat History Area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 relative z-10 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                    <AnimatePresence initial={false}>
-                        {messages.map((msg) => (
-                            <motion.div
-                                key={msg.id}
-                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                className={`flex items-start gap-4 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
-                            >
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-lg border ${msg.sender === 'user'
-                                    ? 'bg-brand-600 border-brand-400/50'
-                                    : msg.sender === 'error'
-                                        ? 'bg-red-500/20 border-red-500/50 text-red-400'
-                                        : 'bg-amber-500/20 border-amber-500/50 text-amber-400 backdrop-blur-md'
-                                    }`}>
-                                    {msg.sender === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
-                                </div>
-                                <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.sender === 'user'
-                                    ? 'bg-brand-600/80 border border-brand-500/50 text-white rounded-tr-sm backdrop-blur-sm'
-                                    : msg.sender === 'error'
-                                        ? 'bg-red-950/50 border border-red-500/30 text-red-200 rounded-tl-sm'
-                                        : 'bg-slate-800/60 border border-slate-700/50 text-slate-200 rounded-tl-sm backdrop-blur-md'
-                                    }`}>
-                                    {msg.sender === 'error' ? (
-                                        <p className="text-sm font-medium tracking-wide">{msg.text}</p>
-                                    ) : (
-                                        <div
-                                            className="text-sm leading-relaxed tracking-wide font-light whitespace-pre-wrap markdown-content"
-                                            dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300 font-bold">$1</strong>').replace(/\*(.*?)\*/g, '<em class="text-amber-100 italic">$1</em>').replace(/\n/g, '<br/>') }}
-                                        />
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-
-                    {loading && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="flex items-start gap-4"
-                        >
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-lg border bg-amber-500/20 border-amber-500/50 text-amber-400 backdrop-blur-md animate-pulse">
-                                <Bot className="w-5 h-5" />
-                            </div>
-                            <div className="bg-slate-800/60 border border-slate-700/50 text-slate-200 rounded-2xl p-4 rounded-tl-sm backdrop-blur-md flex items-center gap-3 w-fit">
-                                <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                                <span className="text-sm font-medium text-slate-400 uppercase tracking-widest text-xs">{t('assistant_analyzing')}</span>
-                            </div>
-                        </motion.div>
-                    )}
-                    <div ref={messagesEndRef} />
+        {/* Chat History View */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-5 relative z-10 scrollbar-thin">
+          <AnimatePresence initial={false}>
+            {messages.map((msg) => (
+              <motion.div
+                key={msg.id}
+                layout
+                {...slideUp}
+                className={`flex items-start gap-4 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border font-mono font-bold text-caption ${
+                  msg.sender === 'user'
+                    ? 'bg-brand-500/10 border-brand-500/30 text-brand-400'
+                    : msg.sender === 'error'
+                      ? 'bg-danger/10 border-danger/20 text-danger-light'
+                      : 'bg-white/[0.02] border-white/[0.04] text-white/40'
+                }`}>
+                  {msg.sender === 'user' ? 'USR' : 'AI'}
                 </div>
-
-                {/* Input Area */}
-                <div className="p-4 bg-slate-900/50 border-t border-white/10 relative z-10 shrink-0">
-                    <form onSubmit={handleSend} className="relative flex items-center">
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder={t('assistant_placeholder')}
-                            disabled={loading}
-                            className="w-full bg-black/40 border border-slate-700 rounded-xl py-4 pl-6 pr-14 text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-light tracking-wide shadow-inner disabled:opacity-50"
-                        />
-                        <button
-                            type="submit"
-                            disabled={!inputValue.trim() || loading}
-                            className="absolute right-2 p-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] disabled:opacity-50 disabled:shadow-none transition-all disabled:cursor-not-allowed"
-                        >
-                            <Send className="w-5 h-5 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" />
-                        </button>
-                    </form>
-                    <p className="text-center text-[10px] text-slate-500 uppercase tracking-widest mt-3">
-                        {t('assistant_warning')}
-                    </p>
+                
+                <div className={`max-w-[75%] rounded-lg p-4 font-mono text-body-sm leading-relaxed ${
+                  msg.sender === 'user'
+                    ? 'bg-brand-500/[0.04] border border-brand-500/10 text-white/90 rounded-tr-none'
+                    : msg.sender === 'error'
+                      ? 'bg-danger/5 border border-danger/10 text-danger-light rounded-tl-none'
+                      : 'bg-white/[0.01] border border-white/[0.03] text-white/70 rounded-tl-none'
+                }`}>
+                  {msg.sender === 'error' ? (
+                    <p className="font-semibold">{msg.text}</p>
+                  ) : (
+                    <div
+                      className="markdown-content font-light"
+                      dangerouslySetInnerHTML={{
+                        __html: msg.text
+                          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-400 font-semibold">$1</strong>')
+                          .replace(/\*(.*?)\*/g, '<em class="text-brand-300 italic">$1</em>')
+                          .replace(/\n/g, '<br/>')
+                      }}
+                    />
+                  )}
                 </div>
-            </div>
-        </motion.div>
-    );
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {loading && (
+            <motion.div {...slideUp} className="flex items-start gap-4">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border bg-white/[0.02] border-white/[0.04] text-white/40 animate-pulse">
+                AI
+              </div>
+              <div className="bg-white/[0.01] border border-white/[0.03] rounded-lg p-4 rounded-tl-none flex items-center gap-3.5 w-fit font-mono text-caption text-white/30">
+                <PulseLoader />
+                <span>compiling intelligence advisor response</span>
+              </div>
+            </motion.div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Console Command Input area */}
+        <div className="p-4 bg-surface-900/60 border-t border-white/[0.04] relative z-10 shrink-0">
+          <form onSubmit={handleSend} className="relative flex items-center">
+            <span className="absolute left-4 text-white/20 font-mono text-body-sm select-none">&gt;</span>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Ask terminal AI crop advisory questions..."
+              disabled={loading}
+              className="w-full bg-black/20 border border-white/[0.04] rounded-lg py-3 pl-8 pr-14 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-500/30 focus:ring-1 focus:ring-brand-500/10 transition-all font-mono text-body-sm disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || loading}
+              className="absolute right-2 p-2 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400 disabled:opacity-30 disabled:pointer-events-none hover:bg-brand-500/20 hover:text-white active:scale-95 transition-all"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+          <p className="text-center text-[8px] text-white/20 uppercase tracking-widest mt-3 font-mono">
+            {t('assistant_warning')}
+          </p>
+        </div>
+      </Card>
+    </motion.div>
+  );
 };
 
 export default FarmAssistant;
