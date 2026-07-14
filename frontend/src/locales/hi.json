@@ -134,5 +134,13 @@
   "crop_confidence": "विश्वास स्कोर",
   "crop_alternatives": "शीर्ष विकल्प",
   "crop_advice": "कृषि सलाह",
-  "crop_ai_advisor": "AI कृषि सलाहकार"
+  "crop_ai_advisor": "AI कृषि सलाहकार",
+  "footer_tagline": "सटीक कृषि खुफिया — रोग पहचान, फसल योजना, उपज पूर्वानुमान और आधुनिक खेतों के लिए AI सलाह।",
+  "footer_nav_label": "प्लेटफ़ॉर्म",
+  "footer_platform_label": "क्षमताएँ",
+  "footer_feature_detection": "CNN रोग स्थानीयकरण",
+  "footer_feature_forecast": "एन्सेम्बल उपज पूर्वानुमान",
+  "footer_feature_assistant": "जेमिनी फार्म असिस्टेंट",
+  "footer_rights": "सर्वाधिकार सुरक्षित।",
+  "footer_built_for": "किसानों, कृषि वैज्ञानिकों और फील्ड टीमों के लिए निर्मित।"
 }

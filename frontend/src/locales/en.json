@@ -134,5 +134,13 @@
   "crop_confidence": "Confidence Score",
   "crop_alternatives": "Top Alternatives",
   "crop_advice": "Agronomic Advice",
-  "crop_ai_advisor": "AI Farming Advisor"
+  "crop_ai_advisor": "AI Farming Advisor",
+  "footer_tagline": "Precision agriculture intelligence — disease detection, crop planning, yield forecasting, and AI advisory for modern farms.",
+  "footer_nav_label": "Platform",
+  "footer_platform_label": "Capabilities",
+  "footer_feature_detection": "CNN disease localization",
+  "footer_feature_forecast": "Ensemble yield forecasting",
+  "footer_feature_assistant": "Gemini farm assistant",
+  "footer_rights": "All rights reserved.",
+  "footer_built_for": "Built for growers, agronomists, and field teams."
 }

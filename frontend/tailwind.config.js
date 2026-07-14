@@ -5,39 +5,85 @@ module.exports = {
     ],
     theme: {
         extend: {
-            colors: {
-                brand: {
-                    50: '#F1F8E9',
-                    100: '#DCEDC8',
-                    200: '#C5E1A5',
-                    300: '#AED581',
-                    400: '#66BB6A', // Rice Field Green
-                    500: '#4CAF50', // Fresh Crop Green
-                    600: '#43A047',
-                    700: '#388E3C',
-                    800: '#2E7D32', // Deep Leaf Green
-                    900: '#1B5E20',
-                },
-                soil: {
-                    100: '#D7CCC8', // Earth Sand
-                    200: '#BCAAA4',
-                    300: '#A1887F',
-                    400: '#8D6E63', // Organic Clay
-                    500: '#795548',
-                    600: '#6D4C41', // Soil Brown
-                    700: '#5D4037',
-                    800: '#4E342E',
-                    900: '#3E2723',
-                },
-                harvest: {
-                    400: '#FFC107', // Harvest Yellow
-                    500: '#FFB300'
-                }
-            },
             fontFamily: {
-                sans: ['Open Sans', 'sans-serif'],
-                heading: ['Poppins', 'sans-serif'],
-            }
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                heading: ['Poppins', 'system-ui', 'sans-serif'],
+                mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            },
+            colors: {
+                // Console base palette — Dark-forest charcoal tones (Linear/Stripe style)
+                surface: {
+                    50:  '#f4f6f5',
+                    100: '#e1e7e4',
+                    200: '#b4c4bd',
+                    300: '#819b90',
+                    400: '#547165',
+                    500: '#3c534a',
+                    600: '#2d3f38',
+                    700: '#1b2622',
+                    800: '#121a17', // Main card background
+                    850: '#0c1210', // Sidebar background
+                    900: '#070a09', // Deepest background
+                    950: '#040605',
+                },
+                brand: {
+                    50:  '#eefbf3',
+                    100: '#d6f5e2',
+                    200: '#b0eac9',
+                    300: '#7ddaa9',
+                    400: '#47c484',
+                    500: '#22c55e', // Emerald green
+                    600: '#16a34a',
+                    700: '#15803d',
+                    800: '#166534',
+                    900: '#14532d',
+                },
+                accent: {
+                    400: '#facc15',
+                    500: '#eab308', // Amber/gold
+                    600: '#ca8a04',
+                },
+                success: {
+                    light: '#4ade80',
+                    DEFAULT: '#22c55e',
+                    dark: '#16a34a',
+                    muted: 'rgba(34, 197, 94, 0.1)',
+                },
+                warning: {
+                    light: '#facc15',
+                    DEFAULT: '#eab308',
+                    dark: '#ca8a04',
+                    muted: 'rgba(234, 179, 8, 0.1)',
+                },
+                danger: {
+                    light: '#f87171',
+                    DEFAULT: '#ef4444',
+                    dark: '#dc2626',
+                    muted: 'rgba(239, 68, 68, 0.1)',
+                },
+                info: {
+                    light: '#60a5fa',
+                    DEFAULT: '#3b82f6',
+                    dark: '#2563eb',
+                    muted: 'rgba(59, 130, 246, 0.1)',
+                },
+            },
+            boxShadow: {
+                'xs':   '0 1px 2px rgba(0, 0, 0, 0.4)',
+                'sm':   '0 2px 8px rgba(0, 0, 0, 0.4)',
+                'md':   '0 8px 24px rgba(0, 0, 0, 0.5)',
+                'lg':   '0 16px 48px rgba(0, 0, 0, 0.6)',
+                'glow-green': '0 0 30px rgba(34, 197, 94, 0.15)',
+                'glow-amber': '0 0 30px rgba(234, 179, 8, 0.15)',
+            },
+            transitionDuration: {
+                'fast':    '150ms',
+                'normal':  '250ms',
+                'slow':    '400ms',
+            },
+            animation: {
+                'shimmer': 'shimmer 2s infinite',
+            },
         },
     },
     plugins: [],

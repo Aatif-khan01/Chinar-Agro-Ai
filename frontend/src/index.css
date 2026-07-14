@@ -1,126 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-brand: #22c55e;
+    --color-accent: #eab308;
+    --color-surface-base: #070a09;
+    --color-surface-panel: #121a17;
+    --color-border: rgba(255, 255, 255, 0.04);
+  }
+
   body {
-    @apply bg-soil-900 text-slate-100 font-sans overflow-x-hidden;
-    font-family: 'Open Sans', sans-serif;
+    @apply bg-surface-900 text-white/80 font-sans overflow-x-hidden antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
   }
 }
 
 @layer components {
-
-  /* 1) Floating Agriculture Cards with depth illusion and earthy glows */
-  .glass-card {
-    @apply relative bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl transition-all duration-500 overflow-hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  /* ─── Blueprint Blueprint Grids & Hairlines ─────────── */
+  
+  .dot-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
-  .glass-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 30px rgba(76, 175, 80, 0.2);
+  .blueprint-border {
+    border-color: rgba(255, 255, 255, 0.04);
   }
 
-  /* 8) Organic Buttons with Natural Glow */
-  .btn-primary {
-    @apply relative px-8 py-4 bg-gradient-to-r from-brand-600 to-brand-400 text-white rounded-2xl shadow-lg transition-all duration-300 font-semibold tracking-wide overflow-hidden z-10;
-    box-shadow: 0 10px 25px -5px rgba(76, 175, 80, 0.4), 0 0 20px rgba(76, 175, 80, 0.3);
+  /* ─── Cards & Containers ───────────────────────────── */
+
+  .console-card {
+    @apply relative border bg-surface-800/40 rounded-xl overflow-hidden backdrop-blur-sm transition-all duration-normal ease-in-out;
+    border-color: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
-  .btn-primary:not(:disabled):hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 20px 30px -5px rgba(76, 175, 80, 0.5), 0 0 40px rgba(76, 175, 80, 0.6);
+  .console-card:hover {
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   }
 
-  /* 4) Organic Inputs */
-  .glowing-input {
-    @apply w-full px-5 py-4 rounded-xl border border-white/10 bg-white/5 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition-all shadow-inner backdrop-blur-md;
+  /* ─── Inputs & Buttons ─────────────────────────────── */
+
+  .console-input {
+    @apply w-full px-3.5 py-2.5 rounded-lg border bg-surface-900/60 text-white/90
+           placeholder:text-white/20 font-mono text-sm
+           border-white/[0.04] outline-none transition-all duration-fast;
   }
 
-  .glowing-input:focus {
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.05);
-  }
-}
-
-/* 5) Animated Gradient Background - moving slowly infinite */
-@keyframes gradient-xy {
-
-  0%,
-  100% {
-    background-size: 400% 400%;
-    background-position: left center;
+  .console-input:focus {
+    @apply border-brand-500/50 ring-1 ring-brand-500/10;
   }
 
-  25% {
-    background-size: 400% 400%;
-    background-position: right top;
+  .console-select {
+    @apply console-input appearance-none pr-8 cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-opacity='0.2' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
   }
 
-  50% {
-    background-size: 400% 400%;
-    background-position: right center;
+  .console-btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+           bg-brand-500 text-white font-semibold text-sm shadow-md transition-all duration-normal hover:brightness-105 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none;
   }
 
-  75% {
-    background-size: 400% 400%;
-    background-position: left bottom;
-  }
-}
-
-.animate-gradient-xy {
-  animation: gradient-xy 20s ease infinite;
-}
-
-/* 6) Floating Leaf/Pollen Particles */
-@keyframes floatUp {
-  0% {
-    transform: translateY(100vh) translateX(0px) rotate(0deg);
-    opacity: 0;
+  .console-btn-secondary {
+    @apply relative inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+           bg-white/[0.02] border border-white/[0.04] text-white/70 font-semibold text-sm transition-all duration-normal hover:bg-white/[0.04] hover:text-white active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none;
   }
 
-  20% {
-    opacity: 0.6;
+  /* ─── Navigation ──────────────────────────────────── */
+
+  .sidebar-link {
+    @apply flex items-center gap-3.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-fast w-full;
   }
 
-  80% {
-    opacity: 0.6;
+  .sidebar-link-active {
+    @apply bg-white/[0.03] text-brand-400 border-l-2 border-brand-500 rounded-l-none font-semibold;
   }
 
-  100% {
-    transform: translateY(-100px) translateX(100px) rotate(360deg);
-    opacity: 0;
+  .sidebar-link-inactive {
+    @apply text-white/40 hover:text-white/80 hover:bg-white/[0.01];
   }
 }
 
-.particle {
-  position: absolute;
-  background: rgba(167, 243, 208, 0.8); /* a light green tint like pollen */
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(167, 243, 208, 0.4), 0 0 20px rgba(76, 175, 80, 0.3);
-  animation: floatUp linear infinite;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Scrollbar customized for earthy look */
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(61, 39, 35, 0.5); /* soil-900 with alpha */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(76, 175, 80, 0.3); /* Fresh Crop Green */
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(76, 175, 80, 0.6);
+  background: rgba(255, 255, 255, 0.1);
 }
