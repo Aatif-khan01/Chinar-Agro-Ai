@@ -305,11 +305,29 @@ class EnsembleEngine:
             else:
                 logger.warning("EfficientNet-B1 SKIPPED — no fine-tuned checkpoint.")
 
+            if loaded_secondary < 2:
+                status_msg = [
+                    "\nModel Status:",
+                    "✓ EfficientNet-B0"
+                ]
+                if self._resnet50 is not None:
+                    status_msg.append("✓ ResNet-50")
+                else:
+                    status_msg.append("✗ ResNet-50 checkpoint missing")
+                    
+                if self._efficientnet_b1 is not None:
+                    status_msg.append("✓ EfficientNet-B1")
+                else:
+                    status_msg.append("✗ EfficientNet-B1 checkpoint missing")
+                
+                if loaded_secondary == 0:
+                    status_msg.append("\nRunning in single-model mode.")
+                else:
+                    status_msg.append(f"\nRunning in partial ensemble mode ({loaded_secondary + 1}/3 models).")
+                    
+                logger.warning("\n".join(status_msg))
+
             if loaded_secondary == 0:
-                logger.warning(
-                    "No secondary models loaded (no fine-tuned checkpoints found). "
-                    "Ensemble will use EfficientNet-B0 ONLY."
-                )
                 # Still mark as loaded so we don't retry every request
                 self._secondary_loaded = True
                 return True

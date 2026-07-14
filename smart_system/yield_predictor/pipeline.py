@@ -121,7 +121,7 @@ class YieldPipeline:
         canonical_crop = self._crop_encoder.inverse_transform([crop_encoded])[0]
 
         # ── Step 3: Fetch weather ─────────────────────────────────────
-        weather = get_weather(state, year)
+        weather = get_weather(state, year, season)
 
         # ── Step 4: Build feature vector ──────────────────────────────
         input_df = build_feature_vector(
@@ -132,7 +132,8 @@ class YieldPipeline:
         )
 
         # ── Step 5: Model prediction ──────────────────────────────────
-        predicted_yield = float(self._model.predict(input_df)[0])
+        predicted_yield = float(self._model.predict(input_df)[0]) * 10000.0
+        predicted_yield = max(0.0, predicted_yield)
 
         # ── Step 6: Classify yield level ──────────────────────────────
         yield_level = _classify_yield(predicted_yield, canonical_crop)

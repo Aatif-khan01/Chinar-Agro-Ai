@@ -263,7 +263,8 @@ class YieldEngine:
         input_df = input_df[self.features]
 
         # Predict
-        predicted_yield = float(self.model.predict(input_df)[0])
+        predicted_yield = float(self.model.predict(input_df)[0]) * 10000.0
+        predicted_yield = max(0.0, predicted_yield)
 
         # Y1 — Uncertainty: std of individual tree predictions
         try:
@@ -271,7 +272,7 @@ class YieldEngine:
             tree_preds = np.array([
                 tree.predict(input_df.values)[0]
                 for tree in self.model.estimators_
-            ])
+            ]) * 10000.0
             yield_uncertainty = round(float(np.std(tree_preds)), 2)
         except Exception:
             yield_uncertainty = None
@@ -319,14 +320,15 @@ class YieldEngine:
         except AttributeError:
             pass
 
-        predicted_yield = float(self.model.predict(data)[0])
+        predicted_yield = float(self.model.predict(data)[0]) * 10000.0
+        predicted_yield = max(0.0, predicted_yield)
 
         # Y1 — Uncertainty: std of individual tree predictions (legacy path)
         try:
             tree_preds = np.array([
                 tree.predict(data.values)[0]
                 for tree in self.model.estimators_
-            ])
+            ]) * 10000.0
             yield_uncertainty = round(float(np.std(tree_preds)), 4)
         except Exception:
             yield_uncertainty = None

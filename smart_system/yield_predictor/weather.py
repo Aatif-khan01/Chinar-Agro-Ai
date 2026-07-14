@@ -86,13 +86,14 @@ def fetch_historical_weather(
     lat: float,
     lon: float,
     year: int,
+    season: Optional[str] = None
 ) -> Optional[Dict[str, float]]:
     """
-    Fetch annual weather averages from Open-Meteo historical archive.
+    Fetch seasonal weather averages from Open-Meteo historical archive.
 
     Requests daily temperature_2m_mean, precipitation_sum, and
-    relative_humidity_2m_mean for the given year and aggregates to
-    annual averages.
+    relative_humidity_2m_mean for the given year/season and aggregates to
+    averages.
 
     Parameters
     ----------
@@ -100,6 +101,8 @@ def fetch_historical_weather(
         Geographic coordinates.
     year : int
         Target year for historical data.
+    season : str, optional
+        Target agricultural season to filter date ranges.
 
     Returns
     -------
@@ -111,10 +114,32 @@ def fetch_historical_weather(
     import datetime
     current_year = datetime.datetime.now().year
     data_year = min(year, current_year - 1)  # always fetch at most last year
-    data_year = max(data_year, 1940)
+    
+    # Rabi and Winter go back 1 year, so clamp to 1941 to avoid going below 1940 archive limit
+    if season in ("Rabi", "Winter"):
+        data_year = max(data_year, 1941)
+    else:
+        data_year = max(data_year, 1940)
 
-    start_date = f"{data_year}-01-01"
-    end_date   = f"{data_year}-12-31"
+    # Determine seasonal date windows in India
+    if season == "Kharif":
+        start_date = f"{data_year}-06-01"
+        end_date = f"{data_year}-10-31"
+    elif season == "Rabi":
+        start_date = f"{data_year-1}-11-01"
+        end_date = f"{data_year}-04-30"
+    elif season == "Summer":
+        start_date = f"{data_year}-03-01"
+        end_date = f"{data_year}-06-30"
+    elif season == "Autumn":
+        start_date = f"{data_year}-09-01"
+        end_date = f"{data_year}-12-31"
+    elif season == "Winter":
+        start_date = f"{data_year-1}-11-01"
+        end_date = f"{data_year}-02-28"
+    else:
+        start_date = f"{data_year}-01-01"
+        end_date = f"{data_year}-12-31"
 
     params = {
         "latitude":        lat,
@@ -140,7 +165,7 @@ def fetch_historical_weather(
 
         return {
             "temperature": round(sum(temps) / len(temps), 2),
-            "rainfall":    round(sum(rains), 2),          # annual total mm
+            "rainfall":    round(sum(rains), 2),          # seasonal total mm
             "humidity":    round(sum(humidities) / len(humidities), 2) if humidities else 70.0,
         }
 
@@ -177,9 +202,9 @@ FALLBACK_WEATHER: Dict[str, Dict[str, float]] = {
 }
 
 
-def get_weather(state: str, year: int) -> Dict[str, float]:
+def get_weather(state: str, year: int, season: Optional[str] = None) -> Dict[str, float]:
     """
-    Get weather data for a given Indian state and year.
+    Get weather data for a given Indian state, year, and season.
 
     Attempts live Open-Meteo API first; falls back to climatological
     defaults on any failure.
@@ -190,6 +215,8 @@ def get_weather(state: str, year: int) -> Dict[str, float]:
         Indian state name (case-insensitive).
     year : int
         Target year.
+    season : str, optional
+        Target agricultural season to filter date ranges.
 
     Returns
     -------
@@ -201,7 +228,7 @@ def get_weather(state: str, year: int) -> Dict[str, float]:
 
     if coords:
         lat, lon = coords
-        weather = fetch_historical_weather(lat, lon, year)
+        weather = fetch_historical_weather(lat, lon, year, season)
         if weather:
             weather["source"] = "api"
             return weather

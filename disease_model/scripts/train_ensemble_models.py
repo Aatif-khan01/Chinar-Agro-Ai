@@ -41,6 +41,7 @@ import sys
 import json
 import time
 import logging
+import torch
 from pathlib import Path
 from typing import Optional
 
@@ -63,7 +64,7 @@ logger = logging.getLogger("train_ensemble")
 TRAIN_CONFIG = {
     "image_size":    224,
     "batch_size":    32,
-    "num_workers":   4,
+    "num_workers":   0,     # 0 on Windows (avoid multiprocessing issues)
     "phase1_epochs": 8,     # Head-only training
     "phase2_epochs": 12,    # Partial fine-tuning
     "phase1_lr":     1e-3,
@@ -93,8 +94,7 @@ def get_data_transforms():
     ])
 
     val_transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(TRAIN_CONFIG["image_size"]),
+        transforms.Resize((TRAIN_CONFIG["image_size"], TRAIN_CONFIG["image_size"])),
         transforms.ToTensor(),
         transforms.Normalize(
             mean=TRAIN_CONFIG["imagenet_mean"],
@@ -298,12 +298,18 @@ def train_one_epoch(model, loader, optimizer, criterion, device, epoch: int):
 
 
 @torch.no_grad()
-def validate(model, loader, criterion, device):
-    """Run validation. Returns (avg_loss, accuracy)."""
+def validate(model, loader, criterion, device, class_names=None, detailed=False):
+    """Run validation. Returns (avg_loss, accuracy) or (avg_loss, accuracy, per_class_acc) if detailed."""
     import torch
+    from collections import defaultdict
 
     model.eval()
     total_loss, correct, total = 0.0, 0, 0
+
+    # Per-class tracking
+    class_correct = defaultdict(int)
+    class_total = defaultdict(int)
+    confusion_pairs = defaultdict(int)  # (true, pred) -> count
 
     for images, labels in loader:
         images, labels = images.to(device), labels.to(device)
@@ -315,7 +321,46 @@ def validate(model, loader, criterion, device):
         correct += predicted.eq(labels).sum().item()
         total += images.size(0)
 
-    return total_loss / total, 100.0 * correct / total
+        # Track per-class stats
+        for true_label, pred_label in zip(labels.cpu().numpy(), predicted.cpu().numpy()):
+            class_total[true_label] += 1
+            if true_label == pred_label:
+                class_correct[true_label] += 1
+            else:
+                confusion_pairs[(true_label, pred_label)] += 1
+
+    avg_loss = total_loss / total
+    accuracy = 100.0 * correct / total
+
+    if detailed and class_names:
+        per_class_acc = {}
+        worst_classes = []
+        for idx in range(len(class_names)):
+            if class_total[idx] > 0:
+                acc = 100.0 * class_correct[idx] / class_total[idx]
+                per_class_acc[class_names[idx]] = round(acc, 1)
+                if acc < 80.0:
+                    worst_classes.append((class_names[idx], acc, class_total[idx]))
+
+        # Log worst-performing classes
+        if worst_classes:
+            worst_classes.sort(key=lambda x: x[1])
+            logger.info("  Worst-performing classes (< 80% accuracy):")
+            for name, acc, count in worst_classes[:10]:
+                logger.info(f"    {name}: {acc:.1f}% ({count} samples)")
+
+        # Log most common confusion pairs
+        if confusion_pairs:
+            top_confusions = sorted(confusion_pairs.items(), key=lambda x: -x[1])[:5]
+            logger.info("  Top confusion pairs (true -> predicted):")
+            for (true_idx, pred_idx), count in top_confusions:
+                true_name = class_names[true_idx] if true_idx < len(class_names) else f"cls_{true_idx}"
+                pred_name = class_names[pred_idx] if pred_idx < len(class_names) else f"cls_{pred_idx}"
+                logger.info(f"    {true_name} -> {pred_name}: {count} times")
+
+        return avg_loss, accuracy, per_class_acc
+
+    return avg_loss, accuracy
 
 
 def train_model(
@@ -455,6 +500,29 @@ def train_model(
         f"Model saved       : {save_path}\n"
         f"{'='*50}"
     )
+
+    # ── Final per-class accuracy report ────────────────────────
+    logger.info(f"\nRunning final per-class accuracy analysis for {model_name}...")
+    # Reload best model for final evaluation
+    model.load_state_dict(torch.load(save_path, map_location=device, weights_only=True))
+    model.eval()
+    _, final_acc, per_class = validate(
+        model, val_loader, criterion, device,
+        class_names=class_names, detailed=True
+    )
+    logger.info(f"Final validation accuracy: {final_acc:.2f}%")
+
+    # Save per-class accuracy to JSON
+    report_path = os.path.join(output_dir, f"per_class_accuracy_{model_name}.json")
+    import json
+    with open(report_path, "w") as f:
+        json.dump({
+            "model": model_name,
+            "overall_accuracy": round(final_acc, 2),
+            "per_class_accuracy": per_class,
+        }, f, indent=2)
+    logger.info(f"Per-class accuracy saved: {report_path}")
+
     return save_path
 
 

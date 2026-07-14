@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Sprout, Wheat, FileText, Menu, X, BrainCircuit, Microscope } from 'lucide-react';
+import { Sprout, Wheat, FileText, Menu, X, BrainCircuit, Microscope, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -11,6 +11,7 @@ import Crop from './pages/Crop';
 import Yield from './pages/Yield';
 import Report from './pages/Report';
 import FarmAssistant from './pages/FarmAssistant';
+import PesticideAuth from './pages/PesticideAuth';
 
 // Floating Particle System Component
 const ParticleBackground = () => {
@@ -78,6 +79,7 @@ const Navbar = () => {
   const { t } = useTranslation();
 
   const menuItems = [
+    { icon: ShieldCheck, label: t('nav_pesticide', 'Pesticide Auth'), path: '/pesticide-auth' },
     { icon: Microscope, label: t('nav_disease'), path: '/disease' },
     { icon: Sprout, label: t('nav_crop'), path: '/crop' },
     { icon: Wheat, label: t('nav_yield'), path: '/yield' },
@@ -192,6 +194,7 @@ function App() {
         <Route path="/yield" element={<Yield />} />
         <Route path="/report" element={<Report />} />
         <Route path="/farm-assistant" element={<FarmAssistant />} />
+        <Route path="/pesticide-auth" element={<PesticideAuth />} />
       </Routes>
     </Layout>
   );

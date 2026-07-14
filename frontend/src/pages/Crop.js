@@ -34,7 +34,8 @@ const Crop = () => {
     };
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: parseFloat(e.target.value) });
+        const val = e.target.value;
+        setFormData({ ...formData, [e.target.name]: val === '' ? '' : parseFloat(val) });
     };
 
     const handlePredict = async (e) => {

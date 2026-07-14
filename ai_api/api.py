@@ -4,7 +4,8 @@ Chinar Agro AI API — Production Grade
 Author  : Chinar Agro AI Team
 Version : 3.0.0
 
-Features
+# Trigger Uvicorn reload - Report yield unit formatting and season input updated
+# Features
 --------
   • Safe model loading with per-model fallback
   • Startup diagnostics banner
@@ -98,6 +99,7 @@ yield_engine   = None
 plant_doctor_pipeline = None
 yield_pipeline = None          # Phase-1 Yield Prediction Pipeline
 ensemble_engine = None         # Ensemble: EfficientNet-B0 + ResNet-50 + EfficientNet-B1
+pesticide_engine = None
 
 _disease_loaded   = False
 _crop_loaded      = False
@@ -237,11 +239,21 @@ def startup():
         except Exception as e:
             log_error(f"Yield Pipeline init failed: {e}")
 
+    # ── Initialize Pesticide Engine ───────────────────────────
+    global pesticide_engine
+    try:
+        from smart_system.pesticide_engine import PesticideEngine
+        pesticide_engine = PesticideEngine()
+        log_info("Pesticide Authentication Engine initialized [OK]")
+    except Exception as e:
+        log_error(f"Pesticide Engine init failed: {e}")
+
     disease_icon  = "[OK]" if disease_status       else "[MISSING]"
     crop_icon     = "[OK]" if crop_status           else "[MISSING]"
     yield_icon    = "[OK]" if yield_status          else "[MISSING]"
     doctor_icon   = "[OK]" if plant_doctor_pipeline else "[MISSING]"
     ensemble_icon = "[OK]" if _ensemble_loaded       else "[NOT TRAINED]"
+    pesticide_icon = "[OK]" if pesticide_engine      else "[MISSING]"
 
     banner = f"""
 ================================
@@ -259,6 +271,7 @@ def startup():
     Yield Model      {yield_icon}
     Plant Doctor AI  {doctor_icon}
     Ensemble Models  {ensemble_icon}
+    Pesticide Auth   {pesticide_icon}
 ================================
 """
     print(banner)
@@ -830,10 +843,10 @@ async def predict_crop(request: CropRequest):
                 "recommended_crop": crop_name,
                 "confidence":       round(confidence, 1),
                 "agronomic_advice": advice,
-                # C1 — Top-3 alternative crop recommendations
+                # C1 — Top-3 alternative crop recommendations (excluding top-1)
                 "top_recommendations": [
                     {"crop": crop, "confidence": round(conf, 1)}
-                    for crop, conf in result.get("top_predictions", [])[:3]
+                    for crop, conf in result.get("top_predictions", [])[1:4]
                 ],
             }
         else:
@@ -1177,6 +1190,52 @@ async def get_yield_trends(request: YieldTrendRequest):
         error_response(f"Failed to fetch trends: {e}")
 
 
+@app.post("/verify-pesticide")
+async def verify_pesticide(
+    file: UploadFile = File(...),
+    target_crop: str = Form(""),
+    target_disease: str = Form("")
+):
+    """AI-Based Pesticide Authentication and Advisory endpoint (Production-grade 6-step analysis)."""
+    log_request("/verify-pesticide", {"filename": file.filename})
+    try:
+        if pesticide_engine is None:
+            error_response("Pesticide engine is not loaded", 503)
+
+        ext = os.path.splitext(file.filename or "")[1].lower()
+        if ext not in VALID_IMAGE_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail={"status": "error", "message": "Invalid image file. Supported: jpg, jpeg, png, bmp, tiff, webp"}
+            )
+
+        from PIL import Image
+        import io
+        image_bytes = await file.read()
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+
+        result = pesticide_engine.analyze_label(image, target_crop, target_disease)
+        
+        if result.get("success"):
+            data = result["data"]
+            # Extract from 11-step nested structure
+            risk = data.get("risk_assessment", {}).get("risk", "UNKNOWN")
+            product = data.get("ocr", {}).get("product_name", "Unknown")
+            similarity = data.get("similarity", {}).get("packaging_similarity", "?")
+            log_prediction("PESTICIDE", f"{product} [Risk: {risk}, Similarity: {similarity}%]")
+            return {
+                "status": "success",
+                **data
+            }
+        else:
+            error_response(result.get("error", "Pesticide analysis failed"))
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_response(f"Pesticide verification exception: {e}")
+
+
 @app.post("/chinar-agro-report")
 async def chinar_agro_report(
     file:        UploadFile = File(None),
@@ -1267,7 +1326,7 @@ async def chinar_agro_report(
                     "yield_uncertainty": y_res.get("yield_uncertainty"),
                     "yield_unit":        y_res.get("yield_unit", "hg/ha"),
                 }
-                log_prediction("YIELD", f"{y_res['predicted_yield']:.2f} t/ha")
+                log_prediction("YIELD", f"{y_res['predicted_yield'] / 10000.0:.2f} t/ha" if y_res.get("yield_unit") == "hg/ha" else f"{y_res['predicted_yield']:.2f} t/ha")
             else:
                 report["yield_prediction"] = {"error": y_res.get("error")}
     except Exception as e:
