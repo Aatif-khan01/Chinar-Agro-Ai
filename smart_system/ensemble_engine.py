@@ -279,31 +279,34 @@ class EnsembleEngine:
             loaded_secondary = 0
 
             # ── ResNet-50 ─────────────────────────────────────
-            logger.info("Loading ResNet-50...")
-            r50 = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
-            r50.fc = nn.Linear(r50.fc.in_features, num_cls)
-            r50 = self._load_checkpoint(r50, cfg.ENSEMBLE_RESNET50_PATH, "ResNet-50")
-            if r50 is not None:
-                r50 = r50.to(self.device).eval()
-                self._resnet50 = r50
-                loaded_secondary += 1
-                logger.info(f"ResNet-50 ready: fc -> {num_cls}")
+            if os.path.isfile(cfg.ENSEMBLE_RESNET50_PATH) and os.path.getsize(cfg.ENSEMBLE_RESNET50_PATH) > 1024:
+                logger.info("Loading ResNet-50...")
+                r50 = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
+                r50.fc = nn.Linear(r50.fc.in_features, num_cls)
+                r50 = self._load_checkpoint(r50, cfg.ENSEMBLE_RESNET50_PATH, "ResNet-50")
+                if r50 is not None:
+                    r50 = r50.to(self.device).eval()
+                    self._resnet50 = r50
+                    loaded_secondary += 1
+                    logger.info(f"ResNet-50 ready: fc -> {num_cls}")
             else:
-                logger.warning("ResNet-50 SKIPPED — no fine-tuned checkpoint.")
+                logger.warning("ResNet-50 SKIPPED — no valid fine-tuned checkpoint found (>1KB).")
 
             # ── EfficientNet-B1 ───────────────────────────────
-            logger.info("Loading EfficientNet-B1...")
-            b1  = models.efficientnet_b1(weights=models.EfficientNet_B1_Weights.IMAGENET1K_V1)
-            in_b1 = b1.classifier[1].in_features
-            b1.classifier = nn.Sequential(nn.Dropout(0.2, inplace=True), nn.Linear(in_b1, num_cls))
-            b1 = self._load_checkpoint(b1, cfg.ENSEMBLE_EFFB1_PATH, "EfficientNet-B1")
-            if b1 is not None:
-                b1 = b1.to(self.device).eval()
-                self._efficientnet_b1 = b1
-                loaded_secondary += 1
-                logger.info(f"EfficientNet-B1 ready: {in_b1} -> {num_cls}")
+            if os.path.isfile(cfg.ENSEMBLE_EFFB1_PATH) and os.path.getsize(cfg.ENSEMBLE_EFFB1_PATH) > 1024:
+                logger.info("Loading EfficientNet-B1...")
+                b1  = models.efficientnet_b1(weights=models.EfficientNet_B1_Weights.IMAGENET1K_V1)
+                in_b1 = b1.classifier[1].in_features
+                b1.classifier = nn.Sequential(nn.Dropout(0.2, inplace=True), nn.Linear(in_b1, num_cls))
+                b1 = self._load_checkpoint(b1, cfg.ENSEMBLE_EFFB1_PATH, "EfficientNet-B1")
+                if b1 is not None:
+                    b1 = b1.to(self.device).eval()
+                    self._efficientnet_b1 = b1
+                    loaded_secondary += 1
+                    logger.info(f"EfficientNet-B1 ready: {in_b1} -> {num_cls}")
             else:
-                logger.warning("EfficientNet-B1 SKIPPED — no fine-tuned checkpoint.")
+                logger.warning("EfficientNet-B1 SKIPPED — no valid fine-tuned checkpoint found (>1KB).")
+
 
             if loaded_secondary < 2:
                 status_msg = [
