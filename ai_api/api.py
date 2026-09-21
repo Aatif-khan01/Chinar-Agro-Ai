@@ -42,6 +42,15 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, validator
 import uvicorn
+import gc
+
+# Keep PyTorch memory overhead low on constrained environments (512MB RAM)
+try:
+    import torch
+    torch.set_num_threads(1)
+except Exception:
+    pass
+
 
 from smart_system.recommendations import RecommendationEngine
 from smart_system.farm_ai_assistant import generate_farming_response
@@ -276,6 +285,7 @@ def startup():
 """
     print(banner)
     log_info(f"Server started | disease={disease_status} | crop={crop_status} | yield={yield_status} | plant_doctor={'OK' if plant_doctor_pipeline else 'FAIL'}")
+    gc.collect()
 
 
 def _safe_import_version(pkg: str) -> str:
@@ -449,6 +459,17 @@ def error_response(message: str, status_code: int = 500):
 # PART 8 — HEALTH CHECK ENDPOINT
 # ══════════════════════════════════════════════════════════════
 
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "service": "Chinar Agro AI API",
+        "version": "3.0.0",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
+
 @app.get("/health")
 async def health_check():
     return {
@@ -459,6 +480,7 @@ async def health_check():
         "yield_model":     _yield_loaded,
         "timestamp":       datetime.now().isoformat()
     }
+
 
 
 # ══════════════════════════════════════════════════════════════
